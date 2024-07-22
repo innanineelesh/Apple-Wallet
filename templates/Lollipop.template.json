@@ -1,0 +1,64 @@
+{
+  "id": "issuerId.studentId",
+  "classId": "your_class_id",
+  "issuerName": "SCHOOL OF RESEARCH SCIENCE",
+  "objectType": "generic",
+  "generic": {
+    "header": {
+      "defaultValue": {
+        "value": "SRS STUDENT PASS"
+      }
+    },
+    "barcode": {
+      "type": "qrCode",
+      "value": "studentId",
+      "alternateText": "studentId"
+    },
+    "textModulesData": [
+      {
+        "header": "Student ID",
+        "body": "studentId"
+      },
+      {
+        "header": "Student Name",
+        "body": "studentName"
+      },
+      {
+        "header": "Year Group",
+        "body": "yearGroup"
+      },
+      {
+        "header": "Class",
+        "body": "class"
+      },
+      {
+        "header": "Section",
+        "body": "section"
+      },
+      {
+        "header": "Parent ID",
+        "body": "parentId"
+      },
+      {
+        "header": "Parent Name",
+        "body": "parentName"
+      },
+      {
+        "header": "Admission Number",
+        "body": "admissionNumber"
+      }
+    ],
+    "locations": [
+      {
+        "latitude": 37.6189722,
+        "longitude": -122.3748889
+      },
+      {
+        "latitude": 37.33182,
+        "longitude": -122.03118
+      }
+    ],
+    "hexBackgroundColor": "#FF7612",
+    "hexTextColor": "#FFFFFF"
+  }
+}

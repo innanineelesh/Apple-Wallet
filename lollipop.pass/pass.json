@@ -1,0 +1,60 @@
+{
+  "formatVersion": 1,
+  "passTypeIdentifier": "pass.com.srs.studentpass.identifier",
+  "serialNumber": "",
+  "webServiceURL": "https://example.com/passes/",
+  "authenticationToken": "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdc",
+  "teamIdentifier": "Y9BPK94R3V",
+  "barcode": {
+    "message": "",
+    "format": "PKBarcodeFormatQR",
+    "messageEncoding": "iso-8859-1"
+  },
+  "organizationName": "SCHOOL OF RESEARCH SCIENCE",
+  "description": "SRS STUDENT PASS",
+  "logoText": "SRS STUDENT PASS",
+  "foregroundColor": "rgb(255, 255, 255)",
+  "backgroundColor": "rgb(255,145,77)",
+  "generic": {
+    "primaryFields": [
+      {
+        "key": "studentName",
+        "value": ""
+      }
+    ],
+    "secondaryFields": [
+      {
+        "key": "admissionNo",
+        "label": "ADMISSION NUMBER",
+        "value": ""
+      },
+      {
+        "key": "class",
+        "label": "CLASS",
+        "value": ""
+      },
+      {
+        "key": "yearGroup",
+        "label": "YEAR GROUP",
+        "value": ""
+      }
+    ],
+    "auxiliaryFields": [
+      {
+        "key": "parentId",
+        "label": "PARENT ID",
+        "value": ""
+      },
+      {
+        "key": "parentName",
+        "label": "PARENT NAME",
+        "value": ""
+      },
+      {
+        "key": "parentNo",
+        "label": "NUMBER",
+        "value": ""
+      }
+    ]
+  }
+}
