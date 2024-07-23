@@ -5,8 +5,21 @@ const jwt = require('jsonwebtoken');
 const issuerId = '3388000000022351279';
 const classId = `${issuerId}.studentPass`;
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
-const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64;
-const credentials = JSON.parse(Buffer.from(serviceAccountBase64, 'base64').toString('utf8'));
+
+// Service account credentials directly used
+const credentials = {
+    "type": "service_account",
+    "project_id": "digital-pass-conx",
+    "private_key_id": "b87be9a60e7f9e3f08330b1ed293a927b30fe047",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDi5nKcD8hYpRN4\n6chH9fvMiKCXjrkbEx6kTWL5FLMsR9zi3Y9x2v+J6y9MhcWrqRbq2HmwUXcAWze/\ntCBTKXIOJr75VMiMsjH+KpPUMZ0bzqOpmrf0VNa4ZywJg+ZWv1noSCBJmgRjiyiM\nlkJZldemMDWO4CV2FixrHJdyFThY2uFJCEBVDsV52EBqF2TKsN9SD38grdu+b8J/\nd87izxxTsl75MYXv3xAhp2SQxM3b5TWqjsP+dJ48yhXJGZlrAqksGwjRlvXAGwoq\newgGHcl8hJ1kdaTo+zzLx6s0h//GesxRVzqXLtN70n0Yazpum5llGbpYnbSB3DCy\nHr9ccc2ZAgMBAAECggEAAq61sOjiW1hDQ0u56440dn9F18OEZnYAHRzm7u8q1vA4\nDoIO97TT49FmbyBfPSzr9Drlhbs8KGJ2Wvi3ZPL23K+M/zAHNBueCe/+rKnpU7Uf\nu/Sew1+Wj2+f0TJ7IFrVhntGJMdH0UCe9M+IyVvt710/StkVSaC65clyHxNcuyHV\n8oWlk/uyAA0vzOOEsYfgoyS+mRWNb6F9PyjUGpPQe3TLBjjax6GsJQtOn4SNPXup\nH9vd740jmcRHEC4U5e4VZ5Gf1GeKkUaXWLAmi2L8TlZ7Y4nspsvz+KzMrZuUw8xc\nOhOr38GtlESEszHjYDPEDOKDiBFGVajMD9ZMda+dQQKBgQD3obfbC/CqyHr0UrnD\n7FCk6XxQXj5qu0HcUWibnn6fgJWxZAINIUtzyCsqXb8fMs/yig2SHFtzSaxMlrAR\nZZ0fbJiU6CD83IrNrHAVNb6AWojzf8Dyc4XqcDRxyANIGtfUSm6lf9amB2KOdN7l\nvVrkFVHTP8OorjudigDEH+OLwQKBgQDqkWEhhahjDdFgKpbp8TMc3vve7OYGYWKO\nwC+9y54LtP6zHLU4FBM8u+ihLijh2VeVlfD0nm+FJ9Rk+O2ISuYxDRPvp8BoGvOG\nnmWDtu8y42mhKHz1vBAdDOOTmg6cJgM/eMFOpBikM1ryr02/5REZwxLBOW8J/WiG\nSAi8q4IX2QKBgQDsl0cI8ox7L1ZCDrPLnAGkvit2wcRSxxxyuhj+7dw+2mSq+kj3\ncIMdWPbc4HqU/UAuk3XJzmwVZyNGfYY06OfIuUHCq1GxJak8Pm9L5HBhQ56rPrkD\nLBqbVZ7VwupXvsXM31x9pPlY4Z9pSgIYb+TiG/h0o+x1QhpVNx/qQiluQQKBgGKf\nu4ofq1vyfF0FqywzmL0D2DyzuEdofMrubWRMj2f2srxWTq+EaU4456eVQ+Upv9SK\nFaSUVOlUhM3rh9utOjnXeNFj49chtdCdGquVp97qlQgIgPnFF7VPLQRrWsc2iFkQ\niZ5qCl5HpW6yXGtZgaYmSeVqI5C8tkz3To0dQ3aJAoGAHXpR9H0XJGCnZPx/Sf04\nQQPuw6oLwgcs4QyD8qClmhnuWWJ6OczaKr9nIbyGv0QQZt9/mD1M4Uw0eDLT7Llm\niJdd3/NfFlIAElZFDpEQ5/XVudkG5YnLIDTcamSansEcYXGEV/2CL9SQhiZNbQV4\nxdMfZvus35T6nRZhNQH3/B0=\n-----END PRIVATE KEY-----\n",
+    "client_email": "digital-pass-conx@digital-pass-conx.iam.gserviceaccount.com",
+    "client_id": "105972286424899033022",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/digital-pass-conx%40digital-pass-conx.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+};
 
 const auth = new GoogleAuth({
     credentials: credentials,
@@ -98,12 +111,17 @@ const createPassClass = async (req, res, next) => {
         next();
     } catch (err) {
         if (err.response && err.response.status === 404) {
-            await auth.request({
-                url: `${baseUrl}/genericClass`,
-                method: 'POST',
-                data: genericClass
-            });
-            next();
+            try {
+                await auth.request({
+                    url: `${baseUrl}/genericClass`,
+                    method: 'POST',
+                    data: genericClass
+                });
+                next();
+            } catch (err) {
+                console.error(err);
+                res.status(500).send('Error creating class');
+            }
         } else {
             console.error(err);
             res.status(500).send('Error creating class');
@@ -113,94 +131,74 @@ const createPassClass = async (req, res, next) => {
 
 const createPassObject = async (req, res) => {
     const { studentId, studentName, studentAdmissionNo, studentYearGroup, studentClass, parentId, parentName, parentNumber } = req.body;
-
-    if (!studentId) {
-        throw new Error('studentId is missing in the request body');
-    }
-
-    const objectSuffix = studentId.replace(/[^\w.-]/g, '_');
-    const objectId = `${issuerId}.${objectSuffix}`;
-
-    const genericObject = {
-        "id": objectId,
+    const studentPass = {
+        "id": `${classId}.${studentId}`,
         "classId": classId,
-        "logo": {
-            "sourceUri": {
-                "uri": "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg",
-            },
-            "contentDescription": {
-                "defaultValue": {
-                    "language": "en-US",
-                    "value": "LOGO_IMAGE_DESCRIPTION",
-                },
-            },
-        },
-        "cardTitle": {
-            "defaultValue": {
-                "language": "en-US",
-                "value": "SRS STUDENT PASS",
-            },
-        },
-        "header": {
-            "defaultValue": {
-                "language": "en-US",
-                "value": studentName,
-            },
-        },
-        "textModulesData": [
-            {
-                "id": "admission_n0",
-                "header": "ADMISSION N0",
-                "body": studentAdmissionNo,
-            },
-            {
-                "id": "year_group",
-                "header": "YEAR GROUP",
-                "body": studentYearGroup,
-            },
-            {
-                "id": "class",
-                "header": "CLASS",
-                "body": studentClass,
-            },
-            {
-                "id": "parent_id",
-                "header": "PARENT ID",
-                "body": parentId,
-            },
-            {
-                "id": "parent_name",
-                "header": "PARENT NAME",
-                "body": parentName,
-            },
-            {
-                "id": "parent_number",
-                "header": "PARENT NUMBER",
-                "body": parentNumber,
-            },
-        ],
+        "state": "active",
+        "version": "1",
         "barcode": {
-            "type": "QR_CODE",
-            "value": studentAdmissionNo,
-            "alternateText": "",
+            "type": "qrCode",
+            "value": jwt.sign({ studentId }, process.env.JWT_SECRET)
         },
-        "hexBackgroundColor": "#ff914d",
+        "infoModuleData": {
+            "infoModuleData": {
+                "header": {
+                    "title": studentName,
+                },
+                "body": [
+                    {
+                        "name": "Admission No",
+                        "value": studentAdmissionNo,
+                    },
+                    {
+                        "name": "Year Group",
+                        "value": studentYearGroup,
+                    },
+                    {
+                        "name": "Class",
+                        "value": studentClass,
+                    },
+                    {
+                        "name": "Parent ID",
+                        "value": parentId,
+                    },
+                    {
+                        "name": "Parent Name",
+                        "value": parentName,
+                    },
+                    {
+                        "name": "Parent Number",
+                        "value": parentNumber,
+                    },
+                ],
+            },
+        },
     };
 
-    const claims = {
-        iss: credentials.client_email,
-        aud: 'google',
-        origins: [],
-        typ: 'savetowallet',
-        payload: {
-            genericObjects: [genericObject]
+    try {
+        await auth.request({
+            url: `${baseUrl}/genericObject/${studentPass.id}`,
+            method: 'GET'
+        });
+        res.status(400).send('Pass object already exists');
+    } catch (err) {
+        if (err.response && err.response.status === 404) {
+            try {
+                await auth.request({
+                    url: `${baseUrl}/genericObject`,
+                    method: 'POST',
+                    data: studentPass
+                });
+                res.status(201).send('Pass object created successfully');
+            } catch (err) {
+                console.error(err);
+                res.status(500).send('Error creating pass object');
+            }
+        } else {
+            console.error(err);
+            res.status(500).send('Error creating pass object');
         }
-    };
-
-    const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
-    const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
-
-    return saveUrl;
+    }
 };
 
 module.exports = {
