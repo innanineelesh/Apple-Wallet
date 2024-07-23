@@ -10,7 +10,7 @@ const crypto = require('crypto');
 const app = express();
 const port = 3000;
 
-const passDir = path.join(__dirname, 'Lollipop.pass');
+const passDir = path.join(__dirname, 'lollipop.pass');
 const certsDir = path.join(__dirname, 'certs');
 const passFileName = 'Lollipop.pkpass';
 
