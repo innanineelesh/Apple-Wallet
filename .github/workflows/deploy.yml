@@ -22,7 +22,7 @@ jobs:
       env:
         SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
       run: |
-        echo $SERVICE_ACCOUNT_JSON | base64 --decode > service-account.json
+        echo $SERVICE_ACCOUNT_JSON | base64 --decode > $GITHUB_WORKSPACE/service-account.json
         export GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/service-account.json
 
     - name: Install dependencies
