@@ -7,9 +7,10 @@ const issuerId = '3388000000022351279';
 const classId = `${issuerId}.studentPass`;
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
 
-const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64;
-const serviceAccountRaw = Buffer.from(serviceAccountBase64, 'base64').toString('utf8');
+const serviceAccountPath = /etc/secrets/service_account.json; 
+const serviceAccountRaw = fs.readFileSync(serviceAccountPath);
 const credentials = JSON.parse(serviceAccountRaw);
+
 
 const auth = new GoogleAuth({
   credentials: {
