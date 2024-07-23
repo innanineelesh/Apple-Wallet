@@ -1,14 +1,7 @@
 require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
 const { GoogleAuth } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
-const path = require('path');
 
-const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Configurations
 const issuerId = '3388000000022351279';
 const classId = `${issuerId}.studentPass`;
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
@@ -20,8 +13,7 @@ const auth = new GoogleAuth({
     scopes: 'https://www.googleapis.com/auth/wallet_object.issuer'
 });
 
-// Function to create pass class if not exists
-async function createPassClass(req, res, next) {
+const createPassClass = async (req, res, next) => {
     const genericClass = {
         "id": classId,
         "classTemplateInfo": {
@@ -117,10 +109,9 @@ async function createPassClass(req, res, next) {
             res.status(500).send('Error creating class');
         }
     }
-}
+};
 
-// Function to create pass object
-async function createPassObject(req, res) {
+const createPassObject = async (req, res) => {
     const { studentId, studentName, studentAdmissionNo, studentYearGroup, studentClass, parentId, parentName, parentNumber } = req.body;
 
     if (!studentId) {
@@ -205,12 +196,12 @@ async function createPassObject(req, res) {
             genericObjects: [genericObject]
         }
     };
-    console.log('Service Account Path:', credentials);
+
     const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
     const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
 
     return saveUrl;
-}
+};
 
 module.exports = {
     createPassClass,
