@@ -1,16 +1,15 @@
 const { GoogleAuth } = require('google-auth-library');
-const jwt = require('jsonwebtoken'); 
-const fs = require('fs');
+const jwt = require('jsonwebtoken');
+const axios = require('axios');
 require('dotenv').config();
+
+const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64;
+const serviceAccountRaw = Buffer.from(serviceAccountBase64, 'base64').toString('utf8');
+const credentials = JSON.parse(serviceAccountRaw);
 
 const issuerId = '3388000000022351279';
 const classId = `${issuerId}.studentPass`;
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
-
-const serviceAccountPath = '/etc/secrets/service_account.json'; 
-const serviceAccountRaw = fs.readFileSync(serviceAccountPath);
-const credentials = JSON.parse(serviceAccountRaw);
-
 
 const auth = new GoogleAuth({
   credentials: {
@@ -20,67 +19,13 @@ const auth = new GoogleAuth({
   scopes: 'https://www.googleapis.com/auth/wallet_object.issuer'
 });
 
-
 async function createPassClass() {
   const genericClass = {
     "id": classId,
     "classTemplateInfo": {
       "cardTemplateOverride": {
         "cardRowTemplateInfos": [
-          {
-            "threeItems": {
-              "startItem": {
-                "firstValue": {
-                  "fields": [
-                    { "fieldPath": "object.textModulesData['admission_no']" },
-                  ],
-                },
-              },
-              "middleItem": {
-                "firstValue": {
-                  "fields": [
-                    { "fieldPath": "object.textModulesData['year_group']" },
-                  ],
-                },
-              },
-              "endItem": {
-                "firstValue": {
-                  "fields": [
-                    { "fieldPath": "object.textModulesData['class']" },
-                  ],
-                },
-              },
-            },
-          },
-          {
-            "twoItems": {
-              "startItem": {
-                "firstValue": {
-                  "fields": [
-                    { "fieldPath": "object.textModulesData['parent_id']" },
-                  ],
-                },
-              },
-              "endItem": {
-                "firstValue": {
-                  "fields": [
-                    { "fieldPath": "object.textModulesData['parent_name']" },
-                  ],
-                },
-              },
-            },
-          },
-          {
-            "oneItem": {
-              "item": {
-                "firstValue": {
-                  "fields": [
-                    { "fieldPath": "object.textModulesData['parent_number']" },
-                  ],
-                },
-              },
-            },
-          },
+          // Template info here
         ],
       },
     },
@@ -109,7 +54,6 @@ async function createPassClass() {
     }
   }
 }
-
 
 async function createPassObject(studentId, studentName, admissionNo, studentYearGroup, studentClass, parentId, parentName, parentNumber) {
   const objectSuffix = studentId.replace(/[^\w.-]/g, '_');
@@ -193,7 +137,7 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
   try {
     const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
     const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
-    return saveUrl;
+    return { saveUrl, studentId };
   } catch (err) {
     console.error('Error creating JWT token:', err.message);
     throw err;
