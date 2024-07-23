@@ -1,14 +1,9 @@
-const express = require('express');
-const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
 const jsonfile = require('jsonfile');
 const forge = require('node-forge');
 const crypto = require('crypto');
-
-const app = express();
-const port = 3000;
 
 const passDir = path.join(__dirname, 'lollipop.pass');
 const certsDir = path.join(__dirname, 'certs');
@@ -18,31 +13,26 @@ const certFile = path.join(certsDir, 'signingCert.pem');
 const keyFile = path.join(certsDir, 'signingKey.pem');
 const wwdrFile = path.join(certsDir, 'WWDR.pem');
 
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Endpoint for generating Apple Wallet pass
-app.post('/generateApplePass', (req, res) => {
+module.exports = (req, res) => {
     const { studentName, admissionNo, studentClass, yearGroup, parentId, parentName, parentNumber } = req.body;
 
-    // Update the pass.json with the provided data
     const passJsonPath = path.join(passDir, 'pass.json');
     const passJson = jsonfile.readFileSync(passJsonPath);
 
     passJson.barcode.message = admissionNo;
-    passJson.generic.primaryFields[0].value = studentName; // Setting student name
-    passJson.generic.secondaryFields[0].value = admissionNo; // Setting admission number
-    passJson.generic.secondaryFields[1].value = studentClass; // Setting student class
-    passJson.generic.secondaryFields[2].value = yearGroup; // Setting year group
-    passJson.generic.auxiliaryFields[0].value = parentId; // Setting parent ID
-    passJson.generic.auxiliaryFields[1].value = parentName; // Setting parent name
-    passJson.generic.auxiliaryFields[2].value = parentNumber; // Setting parent number
+    passJson.generic.primaryFields[0].value = studentName;
+    passJson.generic.secondaryFields[0].value = admissionNo;
+    passJson.generic.secondaryFields[1].value = studentClass;
+    passJson.generic.secondaryFields[2].value = yearGroup;
+    passJson.generic.auxiliaryFields[0].value = parentId;
+    passJson.generic.auxiliaryFields[1].value = parentName;
+    passJson.generic.auxiliaryFields[2].value = parentNumber;
 
     jsonfile.writeFileSync(passJsonPath, passJson, { spaces: 2 });
 
     createPassPackage(res);
-});
+};
 
-// Function to create the pass package
 const createPassPackage = async (res) => {
     try {
         const files = fs.readdirSync(passDir);
@@ -100,16 +90,10 @@ const createPassPackage = async (res) => {
         const derBuffer = Buffer.from(forge.asn1.toDer(p7.toAsn1()).getBytes(), 'binary');
         fs.writeFileSync(signaturePath, derBuffer);
 
-        console.log('Pass signed successfully.');
-
         const output = fs.createWriteStream(path.join(__dirname, passFileName));
-        const archive = archiver('zip', {
-            zlib: { level: 9 }
-        });
+        const archive = archiver('zip', { zlib: { level: 9 } });
 
         output.on('close', () => {
-            console.log(`${archive.pointer()} total bytes`);
-            console.log('Pass created successfully.');
             res.download(path.join(__dirname, passFileName), 'StudentPass.pkpass');
         });
 
@@ -125,5 +109,3 @@ const createPassPackage = async (res) => {
         res.status(500).send('Error generating pass');
     }
 };
-
-module.exports = app;
