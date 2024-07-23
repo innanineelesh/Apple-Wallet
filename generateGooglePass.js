@@ -12,7 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const issuerId = '3388000000022351279';
 const classId = `${issuerId}.studentPass`;
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
-const credentials = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64;
+const credentials = JSON.parse(Buffer.from(serviceAccountBase64, 'base64').toString('utf8'));
 
 const auth = new GoogleAuth({
     credentials: credentials,
