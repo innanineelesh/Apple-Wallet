@@ -1,4 +1,7 @@
 require('dotenv').config();
+const crypto = require('crypto');
+
+const jwtSecret = crypto.randomBytes(32).toString('hex');
 const { GoogleAuth } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 
@@ -138,7 +141,7 @@ const createPassObject = async (req, res) => {
         "version": "1",
         "barcode": {
             "type": "qrCode",
-            "value": jwt.sign({ studentId }, process.env.JWT_SECRET)
+            "value": jwt.sign({ studentId }, JWT_SECRET)
         },
         "infoModuleData": {
             "infoModuleData": {
