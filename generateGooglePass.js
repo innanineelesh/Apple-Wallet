@@ -205,7 +205,7 @@ async function createPassObject(req, res) {
             genericObjects: [genericObject]
         }
     };
-    console.log('Service Account Path:', process.env.GOOGLE_APPLICATION_CREDENTIALS);
+    console.log('Service Account Path:', credentials);
     const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
     const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
 
