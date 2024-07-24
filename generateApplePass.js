@@ -19,7 +19,7 @@ module.exports = (req, res) => {
     const passJsonPath = path.join(passDir, 'pass.json');
     const passJson = jsonfile.readFileSync(passJsonPath);
 
-    passJson.barcode.message = admissionNo;
+    passJson.barcode.message = JSON.stringify({ admissionNo, parentId });
     passJson.generic.primaryFields[0].value = studentName;
     passJson.generic.secondaryFields[0].value = admissionNo;
     passJson.generic.secondaryFields[1].value = studentClass;
