@@ -19,7 +19,7 @@ const auth = new GoogleAuth({
   scopes: 'https://www.googleapis.com/auth/wallet_object.issuer'
 });
 
-async function createPassClass(req, res, next) {
+async function createPassClass(req, res) {
   const genericClass = {
     "id": classId,
     "classTemplateInfo": {
@@ -109,18 +109,25 @@ async function createPassClass(req, res, next) {
           method: 'POST',
           data: genericClass
         });
+        res.status(200).send('Class created successfully.');
       } catch (err) {
         console.error('Error creating class:', err.message);
-        next(err);
+        res.status(500).send('Error creating class');
       }
     } else {
       console.error('Error fetching class:', err.message);
-      next(err);
+      res.status(500).send('Error fetching class');
     }
   }
 }
 
-async function createPassObject(studentId, studentName, admissionNo, studentYearGroup, studentClass, parentId, parentName, parentNumber) {
+async function createPassObject(req, res) {
+  const { studentId, studentName, admissionNo, studentYearGroup, studentClass, parentId, parentName, parentNumber } = req.body;
+  
+  if (!studentId || !studentName || !admissionNo || !studentYearGroup || !studentClass || !parentId || !parentName || !parentNumber) {
+    return res.status(400).send('Missing required fields.');
+  }
+
   const objectSuffix = studentId.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
 
@@ -205,10 +212,10 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
   try {
     const jwtToken = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
     const saveUrl = `https://pay.google.com/gp/v/save/${jwtToken}`;
-    return { saveUrl, studentId, token }; // Include studentId and token in the response
+    res.status(200).json({ saveUrl, token });
   } catch (err) {
     console.error('Error creating JWT token:', err.message);
-    throw err;
+    res.status(500).send('Error creating pass object');
   }
 }
 
