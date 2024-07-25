@@ -19,13 +19,78 @@ const auth = new GoogleAuth({
   scopes: 'https://www.googleapis.com/auth/wallet_object.issuer'
 });
 
-async function createPassClass() {
+async function createPassClass(req, res, next) {
   const genericClass = {
     "id": classId,
     "classTemplateInfo": {
       "cardTemplateOverride": {
         "cardRowTemplateInfos": [
-          // Template info here
+          {
+            "threeItems": {
+              "startItem": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['admission_no']",
+                    },
+                  ],
+                },
+              },
+              "middleItem": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['year_group']",
+                    },
+                  ],
+                },
+              },
+              "endItem": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['class']",
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          {
+            "twoItems": {
+              "startItem": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['parent_id']",
+                    },
+                  ],
+                },
+              },
+              "endItem": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['parent_name']",
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          {
+            "oneItem": {
+              "item": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['parent_number']",
+                    },
+                  ],
+                },
+              },
+            },
+          },
         ],
       },
     },
@@ -46,11 +111,11 @@ async function createPassClass() {
         });
       } catch (err) {
         console.error('Error creating class:', err.message);
-        throw err;
+        next(err);
       }
     } else {
       console.error('Error fetching class:', err.message);
-      throw err;
+      next(err);
     }
   }
 }
