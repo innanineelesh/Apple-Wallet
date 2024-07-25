@@ -18,11 +18,11 @@ module.exports = async (req, res) => {
 
     const currentDate = new Date().toISOString();
     const token = `${currentDate}-${studentId}`;
-
+    const passtoken = `${currentDate}-${studentId}`;
     const passJsonPath = path.join(passDir, 'pass.json');
     const passJson = jsonfile.readFileSync(passJsonPath);
 
-    passJson.barcode.message = JSON.stringify({ admissionNo, studentId, parentId, token });
+    passJson.barcode.message = JSON.stringify({ admissionNo, studentId, parentId, passtoken });
     passJson.generic.primaryFields[0].value = studentName;
     passJson.generic.secondaryFields[0].value = admissionNo;
     passJson.generic.secondaryFields[1].value = studentClass;
