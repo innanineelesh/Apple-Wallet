@@ -37,6 +37,7 @@ module.exports = async (req, res) => {
         await createPassPackage();
 
         // Send the JSON response with studentId and token
+        res.setHeader('parentId', parentId);
         res.setHeader('studentId', studentId);
         res.setHeader('token', token);
         res.download(path.join(__dirname, passFileName), 'StudentPass.pkpass');
