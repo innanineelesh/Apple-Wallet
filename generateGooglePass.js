@@ -121,7 +121,8 @@ async function createPassClass(req, res, next) {
 }
 
 async function createPassObject(studentId, studentName, admissionNo, studentYearGroup, studentClass, parentId, parentName, parentNumber) {
-  const objectSuffix = studentId.replace(/[^\w.-]/g, '_');
+  const studentIdStr = String(studentId);
+  const objectSuffix = studentIdStr.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
 
   const genericObject = {
