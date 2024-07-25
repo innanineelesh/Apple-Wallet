@@ -16,7 +16,7 @@ const auth = new GoogleAuth({
     client_email: credentials.client_email,
     private_key: credentials.private_key,
   },
-  scopes: 'https://www.googleapis.com/auth/wallet_object.issuer'
+  scopes: 'https://www.googleapis.com/auth/wallet_object.issuer',
 });
 
 async function createPassClass(req, res, next) {
