@@ -14,17 +14,17 @@ app.post('/generateApplePass', generateApplePass);
 app.post('/generateGooglePass', async (req, res) => {
     try {
         await generateGooglePass.createPassClass();
-        const saveUrl = await generateGooglePass.createPassObject(
+        const { saveUrl, studentId, token } = await generateGooglePass.createPassObject(
             req.body.studentId,
             req.body.studentName,
-            req.body.admissionNo, // Adjusted field name to match Postman data
+            req.body.admissionNo,
             req.body.yearGroup,
             req.body.studentClass,
             req.body.parentId,
             req.body.parentName,
             req.body.parentNumber
         );
-        res.json({ saveUrl });
+        res.json({ saveUrl, studentId, token });
     } catch (err) {
         console.error('Error creating pass:', err);
         res.status(500).send('Error creating pass');
