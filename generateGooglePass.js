@@ -124,6 +124,9 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
   const objectSuffix = studentId.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
 
+  const currentDate = new Date().toISOString();
+  const token = `${currentDate}-${studentId}`;
+
   const genericObject = {
     "id": objectId,
     "classId": classId,
@@ -184,7 +187,7 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
     ],
     "barcode": {
       "type": "QR_CODE",
-      "value": JSON.stringify({ admissionNo, parentId }),
+      "value": JSON.stringify({ admissionNo, studentId, parentId, token }),
       "alternateText": "",
     },
     "hexBackgroundColor": "#ff914d",
