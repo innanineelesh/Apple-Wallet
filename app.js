@@ -14,7 +14,7 @@ app.post('/generateApplePass', generateApplePass);
 app.post('/generateGooglePass', async (req, res) => {
     try {
         await generateGooglePass.createPassClass();
-        const saveUrl = await generateGooglePass.createPassObject(
+        const { saveUrl, studentId, passtoken , parentId} = await generateGooglePass.createPassObject(
             req.body.studentId,
             req.body.studentName,
             req.body.admissionNo, // Adjusted field name to match Postman data
@@ -24,6 +24,11 @@ app.post('/generateGooglePass', async (req, res) => {
             req.body.parentName,
             req.body.parentNumber
         );
+        res.set({
+            'studentId': studentId,
+            'token': passtoken,
+            'parentId': parentId
+        });
         res.json({ saveUrl });
     } catch (err) {
         console.error('Error creating pass:', err);
