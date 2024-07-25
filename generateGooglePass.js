@@ -125,7 +125,7 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
   const objectSuffix = studentIdStr.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
   const currentDate = new Date().toISOString();
-  const token = `${currentDate}-${studentId}`;
+  const passtoken = `${currentDate}-${studentId}`;
   
   const genericObject = {
     "id": objectId,
@@ -187,7 +187,7 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
     ],
     "barcode": {
       "type": "QR_CODE",
-      "value": JSON.stringify({ admissionNo, parentId,token, studentId }),
+      "value": JSON.stringify({ admissionNo, parentId, passtoken, studentId }),
       "alternateText": "",
     },
     "hexBackgroundColor": "#ff914d",
@@ -205,7 +205,7 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
   try {
     const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
     const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
-    return { saveUrl, studentId,token };
+    return { saveUrl, studentId,passtoken };
   } catch (err) {
     console.error('Error creating JWT token:', err.message);
     throw err;
