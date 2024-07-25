@@ -14,12 +14,15 @@ const keyFile = path.join(certsDir, 'signingKey.pem');
 const wwdrFile = path.join(certsDir, 'WWDR.pem');
 
 module.exports = (req, res) => {
-    const { studentName, admissionNo, studentClass, yearGroup, parentId, parentName, parentNumber } = req.body;
+    const { studentId, studentName, admissionNo, studentClass, yearGroup, parentId, parentName, parentNumber } = req.body;
+
+    const currentDate = new Date().toISOString();
+    const token = `${currentDate}-${studentId}`;
 
     const passJsonPath = path.join(passDir, 'pass.json');
     const passJson = jsonfile.readFileSync(passJsonPath);
 
-    passJson.barcode.message = JSON.stringify({ admissionNo, parentId });
+    passJson.barcode.message = JSON.stringify({ admissionNo, studentId, parentId, token });
     passJson.generic.primaryFields[0].value = studentName;
     passJson.generic.secondaryFields[0].value = admissionNo;
     passJson.generic.secondaryFields[1].value = studentClass;
