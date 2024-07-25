@@ -30,70 +30,58 @@ async function createPassClass(req, res) {
               "startItem": {
                 "firstValue": {
                   "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['admission_no']",
-                    },
-                  ],
-                },
+                    { "fieldPath": "object.textModulesData['admission_no']" }
+                  ]
+                }
               },
               "middleItem": {
                 "firstValue": {
                   "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['year_group']",
-                    },
-                  ],
-                },
+                    { "fieldPath": "object.textModulesData['year_group']" }
+                  ]
+                }
               },
               "endItem": {
                 "firstValue": {
                   "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['class']",
-                    },
-                  ],
-                },
-              },
-            },
+                    { "fieldPath": "object.textModulesData['class']" }
+                  ]
+                }
+              }
+            }
           },
           {
             "twoItems": {
               "startItem": {
                 "firstValue": {
                   "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['parent_id']",
-                    },
-                  ],
-                },
+                    { "fieldPath": "object.textModulesData['parent_id']" }
+                  ]
+                }
               },
               "endItem": {
                 "firstValue": {
                   "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['parent_name']",
-                    },
-                  ],
-                },
-              },
-            },
+                    { "fieldPath": "object.textModulesData['parent_name']" }
+                  ]
+                }
+              }
+            }
           },
           {
             "oneItem": {
               "item": {
                 "firstValue": {
                   "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['parent_number']",
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        ],
-      },
-    },
+                    { "fieldPath": "object.textModulesData['parent_number']" }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
   };
 
   try {
@@ -131,73 +119,46 @@ async function createPassObject(req, res) {
   const objectSuffix = studentId.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
 
-  const currentDate = new Date().toISOString();
-  const token = `${currentDate}-${studentId}`;
-
   const genericObject = {
     "id": objectId,
     "classId": classId,
     "logo": {
       "sourceUri": {
-        "uri": "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg",
+        "uri": "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg"
       },
       "contentDescription": {
         "defaultValue": {
           "language": "en-US",
-          "value": "LOGO_IMAGE_DESCRIPTION",
-        },
-      },
+          "value": "LOGO_IMAGE_DESCRIPTION"
+        }
+      }
     },
     "cardTitle": {
       "defaultValue": {
         "language": "en-US",
-        "value": "SRS STUDENT PASS",
-      },
+        "value": "SRS STUDENT PASS"
+      }
     },
     "header": {
       "defaultValue": {
         "language": "en-US",
-        "value": studentName,
-      },
+        "value": studentName
+      }
     },
     "textModulesData": [
-      {
-        "id": "admission_no",
-        "header": "ADMISSION NO",
-        "body": admissionNo,
-      },
-      {
-        "id": "year_group",
-        "header": "YEAR GROUP",
-        "body": studentYearGroup,
-      },
-      {
-        "id": "class",
-        "header": "CLASS",
-        "body": studentClass,
-      },
-      {
-        "id": "parent_id",
-        "header": "PARENT ID",
-        "body": parentId,
-      },
-      {
-        "id": "parent_name",
-        "header": "PARENT NAME",
-        "body": parentName,
-      },
-      {
-        "id": "parent_number",
-        "header": "PARENT NUMBER",
-        "body": parentNumber,
-      },
+      { "id": "admission_no", "header": "ADMISSION NO", "body": admissionNo },
+      { "id": "year_group", "header": "YEAR GROUP", "body": studentYearGroup },
+      { "id": "class", "header": "CLASS", "body": studentClass },
+      { "id": "parent_id", "header": "PARENT ID", "body": parentId },
+      { "id": "parent_name", "header": "PARENT NAME", "body": parentName },
+      { "id": "parent_number", "header": "PARENT NUMBER", "body": parentNumber }
     ],
     "barcode": {
       "type": "QR_CODE",
       "value": JSON.stringify({ admissionNo, studentId, parentId, token }),
-      "alternateText": "",
+      "alternateText": ""
     },
-    "hexBackgroundColor": "#ff914d",
+    "hexBackgroundColor": "#ff914d"
   };
 
   const claims = {
@@ -212,7 +173,7 @@ async function createPassObject(req, res) {
   try {
     const jwtToken = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
     const saveUrl = `https://pay.google.com/gp/v/save/${jwtToken}`;
-    res.status(200).json({ saveUrl, token });
+    res.status(200).json({ saveUrl, token: jwtToken });
   } catch (err) {
     console.error('Error creating JWT token:', err.message);
     res.status(500).send('Error creating pass object');
