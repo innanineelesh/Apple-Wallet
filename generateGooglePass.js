@@ -187,7 +187,7 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
     ],
     "barcode": {
       "type": "QR_CODE",
-      "value": JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, yearGroup, parentName, parentNumber}),
+      "value": JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, studentYearGroup, parentName, parentNumber}),
       "alternateText": "",
     },
     "hexBackgroundColor": "#ff914d",
