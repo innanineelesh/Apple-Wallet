@@ -108,6 +108,7 @@ const createPassPackage = async () => {
 
     return new Promise((resolve, reject) => {
         output.on('close', () => {
+            console.log(`Created pass package with ${archive.pointer()} total bytes`);
             resolve();
         });
 
