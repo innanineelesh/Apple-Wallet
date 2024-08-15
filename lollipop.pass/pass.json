@@ -36,7 +36,7 @@
       },
       {
         "key": "yearGroup",
-        "label": "YEAR GROUP",
+        "label": "LEAVING DATE",
         "value": ""
       }
     ],
@@ -53,7 +53,7 @@
       },
       {
         "key": "parentNo",
-        "label": "NUMBER",
+        "label": "MOBILE NUMBER",
         "value": ""
       }
     ]
