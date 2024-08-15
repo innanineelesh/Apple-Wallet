@@ -35,14 +35,14 @@
         "value": ""
       },
       {
-        "key": "yearGroup",
+        "key": "leavingDate",
         "label": "LEAVING DATE",
         "value": ""
       }
     ],
     "auxiliaryFields": [
       {
-        "key": "parentId",
+        "key": "extParentId",
         "label": "PARENT ID",
         "value": ""
       },
