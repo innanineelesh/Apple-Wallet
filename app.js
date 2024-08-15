@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); 
 
 app.post('/generateApplePass', generateApplePass);
+app.post('/refreshApplePass', refreshApplePass);
 app.post('/generateGooglePass', async (req, res) => {
     try {
         await generateGooglePass.createPassClass();
