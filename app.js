@@ -17,9 +17,10 @@ app.post('/generateGooglePass', async (req, res) => {
         const { saveUrl, studentId, passtoken , parentId} = await generateGooglePass.createPassObject(
             req.body.studentId,
             req.body.studentName,
-            req.body.admissionNo, // Adjusted field name to match Postman data
-            req.body.yearGroup,
+            req.body.admissionNo, 
             req.body.studentClass,
+            req.body.leavingDate,
+            req.body.extParentId,
             req.body.parentId,
             req.body.parentName,
             req.body.parentNumber
