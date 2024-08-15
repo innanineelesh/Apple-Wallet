@@ -126,7 +126,7 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
   const objectId = `${issuerId}.${objectSuffix}`;
   const currentDate = new Date().toISOString();
   const passtoken = `${currentDate}-${studentId}`;
-  
+  console.log('Object ID:'+objectId);
   const genericObject = {
     "id": objectId,
     "classId": classId,
