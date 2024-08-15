@@ -120,7 +120,7 @@ async function createPassClass(req, res, next) {
   }
 }
 
-async function createPassObject(studentId, studentName, admissionNo, studentYearGroup, studentClass, parentId, parentName, parentNumber) {
+async function createPassObject(studentId, studentName, admissionNo,studentClass,leavingDate, extParentId,parentId, parentName, parentNumber) {
   const studentIdStr = String(studentId);
   const objectSuffix = studentIdStr.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
@@ -161,8 +161,8 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
       },
       {
         "id": "year_group",
-        "header": "YEAR GROUP",
-        "body": studentYearGroup,
+        "header": "LEAVING DATE",
+        "body": leavingDate,
       },
       {
         "id": "class",
@@ -172,7 +172,7 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
       {
         "id": "parent_id",
         "header": "PARENT ID",
-        "body": parentId,
+        "body": extParentId,
       },
       {
         "id": "parent_name",
@@ -181,13 +181,13 @@ async function createPassObject(studentId, studentName, admissionNo, studentYear
       },
       {
         "id": "parent_number",
-        "header": "PARENT NUMBER",
+        "header": "MOBILE NUMBER",
         "body": parentNumber,
       },
     ],
     "barcode": {
       "type": "QR_CODE",
-      "value": JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, studentYearGroup, parentName, parentNumber}),
+      "value": JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, leavingDate,extParentId, parentName, parentNumber}),
       "alternateText": "",
     },
     "hexBackgroundColor": "#ff914d",
