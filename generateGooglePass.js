@@ -3,12 +3,12 @@ const jwt = require('jsonwebtoken');
 const axios = require('axios');
 require('dotenv').config();
 
-const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64_1;
+const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64;
 const serviceAccountRaw = Buffer.from(serviceAccountBase64, 'base64').toString('utf8');
 const credentials = JSON.parse(serviceAccountRaw);
 
-const issuerId = '3388000000022354783';
-const classId = `${issuerId}.StudentPass`;
+const issuerId = '3388000000022351279';
+const classId = `${issuerId}.studentPass`;
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
 
 const auth = new GoogleAuth({
