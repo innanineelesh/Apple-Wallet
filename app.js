@@ -12,7 +12,26 @@ app.use(bodyParser.json());
 app.post(
   "/:version/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier/:serialNumber",
   async (req, res) => {
-      console.log(req);
+      try {
+          const { deviceLibraryIdentifier, passTypeIdentifier, serialNumber } = req.params;
+          const { pushToken } = req.body;
+
+          // Example: Store these details in your database (pseudo code)
+          await storeDeviceRegistration({
+              deviceLibraryIdentifier,
+              passTypeIdentifier,
+              serialNumber,
+              pushToken,
+              registrationDate: new Date().toISOString()
+          });
+
+          console.log('Device registered for pass updates:', { deviceLibraryIdentifier, passTypeIdentifier, serialNumber, pushToken });
+
+          res.status(201).send('Device successfully registered for pass updates');
+      } catch (error) {
+          console.error('Error during device registration:', error);
+          res.status(500).send('Error registering device');
+      }
   });
 
 app.post('/generateApplePass', generateApplePass);
