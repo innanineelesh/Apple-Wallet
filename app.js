@@ -22,7 +22,7 @@ const saveDevice = async (deviceToken, serialNumber) => {
 };
 
 // Device registration endpoint
-app.post('/passes', passes);
+app.get('/passes', passes);
 
 
 app.post('/generateApplePass', generateApplePass);
