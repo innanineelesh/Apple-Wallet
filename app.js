@@ -9,48 +9,42 @@ const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); 
 
+const saveDevice = async (deviceToken, serialNumber) => {
+    try {
+        // Add your logic to store deviceToken and serialNumber
+        console.log(`Device Token: ${deviceToken}, Serial Number: ${serialNumber}`);
+        // Example: await yourSalesforceAPICall(deviceToken, serialNumber);
+        return { success: true };
+    } catch (error) {
+        console.error('Error saving device token:', error);
+        throw new Error('Failed to save device token');
+    }
+};
+
 // Device registration endpoint
-app.post('/passes/:version/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier/:serialNumber', (req, res) => {
-  const deviceToken = req.body.deviceToken;
-  const serialNumber = req.params.serialNumber;
+app.post('/passes/:version/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier/:serialNumber', async (req, res) => {
+    const deviceToken = req.body.deviceToken;
+    const serialNumber = req.params.serialNumber;
 
-  // Save the device token and serial number in the database
-  saveDevice(deviceToken, serialNumber);
-
-  res.sendStatus(200);
-});
-
-// Generate Apple Wallet Pass and include deviceToken in response
-app.post('/generateApplePass', async (req, res) => {
-    const deviceToken = req.body.deviceToken; // Capture deviceToken from the request body
+    if (!deviceToken || !serialNumber) {
+        return res.status(400).send('Missing deviceToken or serialNumber');
+    }
 
     try {
-        await generateApplePass(req, res); // Call the pass generation function
-
-        // After the pass is generated, include the deviceToken in the response headers
-        res.setHeader('Device-Token', deviceToken);
-        res.setHeader('Content-Type', 'application/json');
-
-        // Send JSON response including studentId, parentId, token, and deviceToken
-        res.json({
-            success: true,
-            message: "Pass generated successfully",
-            deviceToken: deviceToken,
-            studentId: req.body.studentId,
-            parentId: req.body.parentId,
-            token: req.body.token
-        });
-    } catch (err) {
-        console.error('Error generating Apple pass:', err);
-        res.status(500).send('Error generating Apple pass');
+        // Save the device token and serial number
+        await saveDevice(deviceToken, serialNumber);
+        res.sendStatus(200);
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
     }
 });
 
-// Generate Google Wallet Pass
+app.post('/generateApplePass', generateApplePass);
+
 app.post('/generateGooglePass', async (req, res) => {
     try {
         await generateGooglePass.createPassClass();
-        const { saveUrl, studentId, passtoken , parentId } = await generateGooglePass.createPassObject(
+        const { saveUrl, studentId, passtoken , parentId} = await generateGooglePass.createPassObject(
             req.body.studentId,
             req.body.studentName,
             req.body.admissionNo, 
@@ -68,8 +62,8 @@ app.post('/generateGooglePass', async (req, res) => {
         });
         res.json({ saveUrl });
     } catch (err) {
-        console.error('Error creating Google pass:', err);
-        res.status(500).send('Error creating Google pass');
+        console.error('Error creating pass:', err);
+        res.status(500).send('Error creating pass');
     }
 });
 
