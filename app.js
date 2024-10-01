@@ -9,6 +9,15 @@ const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); 
 
+app.post('/passes/:version/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier/:serialNumber', (req, res) => {
+  const deviceToken = req.body.deviceToken;
+  const serialNumber = req.params.serialNumber;
+
+  // Save the device token and serial number in the database
+  saveDevice(deviceToken, serialNumber);
+  
+  res.sendStatus(200);
+});
 app.post('/generateApplePass', generateApplePass);
 
 app.post('/generateGooglePass', async (req, res) => {
