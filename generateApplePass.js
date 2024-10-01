@@ -14,40 +14,15 @@ const keyFile = path.join(certsDir, 'signingKey.pem');
 const wwdrFile = path.join(certsDir, 'WWDR.pem');
 
 module.exports = async (req, res) => {
-    const {
-        studentId,
-        studentName,
-        admissionNo,
-        studentClass,
-        leavingDate,
-        extParentId,
-        parentId,
-        parentName,
-        parentNumber,
-        deviceToken // Capture deviceToken
-    } = req.body;
+    const { studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber } = req.body;
 
     const currentDate = new Date().toISOString();
     const token = `${currentDate}-${studentId}`;
     const passtoken = `${currentDate}-${studentId}`;
     const passJsonPath = path.join(passDir, 'pass.json');
     const passJson = jsonfile.readFileSync(passJsonPath);
-
-    // Update the pass.json fields with the required data
-    passJson.serialNumber = studentId;
-    passJson.barcode.message = JSON.stringify({
-        admissionNo,
-        studentId,
-        parentId,
-        passtoken,
-        studentName,
-        admissionNo,
-        studentClass,
-        leavingDate,
-        extParentId,
-        parentName,
-        parentNumber
-    });
+    passJson.serialNumber = studentId; 
+    passJson.barcode.message = JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, leavingDate,extParentId, parentName, parentNumber});
     passJson.generic.primaryFields[0].value = studentName;
     passJson.generic.secondaryFields[0].value = admissionNo;
     passJson.generic.secondaryFields[1].value = studentClass;
@@ -61,13 +36,10 @@ module.exports = async (req, res) => {
     try {
         await createPassPackage();
 
-        // Set headers to include studentId, token, parentId, and deviceToken
+        // Send the JSON response with studentId and token
         res.setHeader('parentId', parentId);
         res.setHeader('studentId', studentId);
         res.setHeader('token', token);
-        res.setHeader('Device-Token', deviceToken); // Include deviceToken in the response
-
-        // Return the generated pass for download
         res.download(path.join(__dirname, passFileName), 'StudentPass.pkpass');
     } catch (err) {
         console.error('Error generating pass package:', err);
@@ -75,7 +47,6 @@ module.exports = async (req, res) => {
     }
 };
 
-// Function to create the pass package and sign it
 const createPassPackage = async () => {
     const files = fs.readdirSync(passDir);
     const manifest = {};
