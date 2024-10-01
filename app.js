@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const generateApplePass = require('./generateApplePass');
 const generateGooglePass = require('./generateGooglePass');
-const passes = require('./passes');
 const app = express();
 const port = 3000;
 
@@ -20,9 +19,6 @@ const saveDevice = async (deviceToken, serialNumber) => {
         throw new Error('Failed to save device token');
     }
 };
-
-// Device registration endpoint
-app.get('/passes', passes);
 
 
 app.post('/generateApplePass', generateApplePass);
