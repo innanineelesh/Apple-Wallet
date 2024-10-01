@@ -23,6 +23,11 @@ const saveDevice = async (deviceToken, serialNumber) => {
 
 // Device registration endpoint
 app.post('/passes/:version/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier/:serialNumber', async (req, res) => {
+    console.log('Device Registration Request Received');
+    console.log('Request Body:', req.body);
+    console.log('Serial Number:', req.params.serialNumber);
+    console.log('Device Library Identifier:', req.params.deviceLibraryIdentifier);
+
     const deviceToken = req.body.deviceToken;
     const serialNumber = req.params.serialNumber;
 
@@ -35,6 +40,7 @@ app.post('/passes/:version/devices/:deviceLibraryIdentifier/registrations/:passT
         await saveDevice(deviceToken, serialNumber);
         res.sendStatus(200);
     } catch (error) {
+        console.error('Error saving device token:', error);
         res.status(500).send('Internal Server Error');
     }
 });
