@@ -2,11 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const generateApplePass = require('./generateApplePass');
 const generateGooglePass = require('./generateGooglePass');
+const passes = require('./passes');
 const app = express();
 const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); 
+
+app.post('/passes', passes);
 
 app.post('/generateApplePass', generateApplePass);
 
