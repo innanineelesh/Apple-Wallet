@@ -25,7 +25,7 @@ const saveDevice = async (deviceToken, serialNumber) => {
 app.post('/passes', passes);
 
 
-app.post('/generateApplePass', generateApplePass);
+app.post('/generateApplePass', passes);
 
 app.post('/generateGooglePass', async (req, res) => {
     try {
