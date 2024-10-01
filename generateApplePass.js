@@ -21,6 +21,7 @@ module.exports = async (req, res) => {
     const passtoken = `${currentDate}-${studentId}`;
     const passJsonPath = path.join(passDir, 'pass.json');
     const passJson = jsonfile.readFileSync(passJsonPath);
+    passJson.lastUpdate = new Date().toISOString();
     passJson.serialNumber = studentId; 
     passJson.barcode.message = JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, leavingDate,extParentId, parentName, parentNumber});
     passJson.generic.primaryFields[0].value = studentName;
