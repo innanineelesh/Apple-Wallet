@@ -9,7 +9,11 @@ const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); 
 
-app.post('/passes', passes);
+app.post(
+  "/:version/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier/:serialNumber",
+  async (req, res) => {
+      console.log(req);
+  });
 
 app.post('/generateApplePass', generateApplePass);
 
