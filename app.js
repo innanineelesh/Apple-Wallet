@@ -22,7 +22,7 @@ const saveDevice = async (deviceToken, serialNumber) => {
 };
 
 // Device registration endpoint
-app.post('/passes/:version/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier/:serialNumber', async (req, res) => {
+app.post('/passes/', async (req, res) => {
     console.log('Device Registration Request Received');
     console.log('Request Body:', req.body);
     console.log('Serial Number:', req.params.serialNumber);
