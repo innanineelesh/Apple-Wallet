@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "passTypeIdentifier": "pass.com.srs.studentpass.identifier",
   "serialNumber": "studentId",
-  "webServiceURL": "https://apple-wallet.onrender.com/passes",
+  "webServiceURL": "https://apple-wallet.onrender.com",
   "authenticationToken": "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdc",
   "teamIdentifier": "Y9BPK94R3V",
   "lastUpdate": "",
