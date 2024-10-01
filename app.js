@@ -8,19 +8,6 @@ const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); 
 
-const saveDevice = async (deviceToken, serialNumber) => {
-    try {
-        // Add your logic to store deviceToken and serialNumber
-        console.log(`Device Token: ${deviceToken}, Serial Number: ${serialNumber}`);
-        // Example: await yourSalesforceAPICall(deviceToken, serialNumber);
-        return { success: true };
-    } catch (error) {
-        console.error('Error saving device token:', error);
-        throw new Error('Failed to save device token');
-    }
-};
-
-
 app.post('/generateApplePass', generateApplePass);
 
 app.post('/generateGooglePass', async (req, res) => {
