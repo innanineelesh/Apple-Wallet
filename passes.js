@@ -5,7 +5,7 @@ const axios = require('axios');
 
 module.exports = async (req, res) => {
     
-
+console.log(req);
 const url = 'https://apple-wallet.onrender.com/passes';
 
 // Set the request body with the necessary parameters
