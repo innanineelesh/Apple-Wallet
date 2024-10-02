@@ -55,6 +55,10 @@ app.post('/generateGooglePass', async (req, res) => {
     }
 });
 
+app.post('/updateGooglePass', updateGooglePass);
+
+app.post('/updateApplePass',updateApplePass);
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/`);
 });
