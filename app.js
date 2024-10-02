@@ -4,7 +4,7 @@ const generateApplePass = require('./generateApplePass');
 const generateGooglePass = require('./generateGooglePass');
 const updateGooglePass = require('./updateGooglePass');
 const updateApplePass = require('./updateApplePass');
-const passes = require('./passes');
+
 const app = express();
 const port = 3000;
 
