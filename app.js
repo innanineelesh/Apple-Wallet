@@ -55,7 +55,7 @@ app.post('/generateGooglePass', async (req, res) => {
     }
 });
 
-app.post('/updateGooglePass', updateGooglePass);
+app.patch('/updateGooglePass', updateGooglePass);
 
 app.post('/updateApplePass',updateApplePass);
 
