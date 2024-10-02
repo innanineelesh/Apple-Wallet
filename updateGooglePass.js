@@ -6,8 +6,8 @@ const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64_1
 const serviceAccountRaw = Buffer.from(serviceAccountBase64, 'base64').toString('utf8');
 const credentials = JSON.parse(serviceAccountRaw);
 
-const issuerId = '3388000000022354783';
-const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
+const issuerId = '3388000000022354783'; // Your issuer ID
+const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1'; // Base URL for Google Wallet API
 
 const auth = new GoogleAuth({
   credentials: {
@@ -41,11 +41,25 @@ async function updateGooglePass(req, res) {
       data: patchPayload, // Data to patch the pass object
     });
 
+    // Log the successful response
     console.log('Google Pass Updated:', response.data);
-    res.status(200).send('Google Pass successfully updated');
+
+    // Send a success response to the client
+    res.status(200).json({
+      message: 'Google Pass successfully updated',
+      data: response.data, // Optional: include response data if needed
+    });
   } catch (error) {
+    // Enhanced error handling
     console.error('Error updating Google Pass:', error.message);
-    res.status(500).send('Failed to update Google Pass');
+    
+    // Check if the error response is available
+    if (error.response) {
+      console.error('Error response data:', error.response.data);
+      res.status(error.response.status).send(error.response.data); // Send the specific error message from Google API
+    } else {
+      res.status(500).send('Failed to update Google Pass');
+    }
   }
 }
 
