@@ -11,6 +11,16 @@ const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+async function getPublicIP() {
+  try {
+    const response = await axios.get('https://ifconfig.me');
+    console.log('Public IP Address:', response.data);
+  } catch (error) {
+    console.error('Error fetching public IP:', error);
+  }
+}
+
+
 
 const SALESFORCE_TOKEN_URL = 'https://test.salesforce.com/services/oauth2/token';
 const SALESFORCE_API_URL = 'https://schoolofresearchscience--conxdev.sandbox.lightning.force.com/services/data/v58.0/';
@@ -91,6 +101,7 @@ app.post(
 app.post('/generateApplePass', generateApplePass);
 
 app.post('/generateGooglePass', async (req, res) => {
+getPublicIP();
     try {
         await generateGooglePass.createPassClass();
 
