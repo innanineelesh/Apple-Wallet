@@ -59,7 +59,7 @@ app.post(
             const [studentId, parentId] = serialNumber.split('-');
             console.log("Split Serial Number into Student ID and Parent ID:", { studentId, parentId });
             
-            const query = `SELECT Id FROM ${SALESFORCE_OBJECT_NAME} WHERE student__c = '${studentId}' AND parent__c = '${parentId}' LIMIT 1`;
+            const query = `SELECT + Id + FROM + ${SALESFORCE_OBJECT_NAME} + WHERE + student__c = '${studentId}' + AND + parent__c = '${parentId}' + LIMIT + 1`;
             console.log('Constructed SOQL Query:', query);
             
             const queryUrl = `${SALESFORCE_API_URL}query?q=${encodeURIComponent(query)}`;
