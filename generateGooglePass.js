@@ -126,6 +126,7 @@ async function createPassObject(studentId, studentName, admissionNo,studentClass
   const objectId = `${issuerId}.${objectSuffix}`;
   const currentDate = new Date().toISOString();
   const passtoken = `${currentDate}-${studentId}`;
+  const serialNumber = `${studentId}-${parentId}`;
   console.log('Object ID:'+objectId);
   const genericObject = {
     "id": objectId,
@@ -191,6 +192,7 @@ async function createPassObject(studentId, studentName, admissionNo,studentClass
       "alternateText": "",
     },
     "hexBackgroundColor": "#ff914d",
+    "serialNumber": serialNumber 
   };
 
   const claims = {
