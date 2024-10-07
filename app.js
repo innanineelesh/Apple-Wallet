@@ -67,8 +67,8 @@ app.post(
             
             const queryResponse = await axios.get(queryUrl, {
                 headers: {
-                    'Authorization': `Bearer ${SALESFORCE_ACCESS_TOKEN}`,
-                    'Content-Type': 'application/json'
+                    'Authorization': Bearer ${SALESFORCE_ACCESS_TOKEN},
+                    'Content-Type': application/json
                 }
             });
 
