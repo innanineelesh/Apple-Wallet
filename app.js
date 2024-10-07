@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const axios = require('axios'); // Add axios require
+const axios = require('axios'); 
 const generateApplePass = require('./generateApplePass');
 const generateGooglePass = require('./generateGooglePass');
 const updateGooglePass = require('./updateGooglePass');
@@ -12,20 +12,19 @@ const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-async function getPublicIP() {
-    try {
-        const response = await axios.get('https://ifconfig.me');
-        console.log('Public IP Address:', response.data);
-    } catch (error) {
-        console.error('Error fetching public IP:', error);
-    }
-}
+let isRequestInProgress = false; // Declare this variable
+let cachedAccessToken = null;
+let tokenExpiryTime = null;
 
 const SALESFORCE_TOKEN_URL = 'https://test.salesforce.com/services/oauth2/token';
 const SALESFORCE_API_URL = 'https://schoolofresearchscience--conxdev.sandbox.lightning.force.com/services/data/v58.0/';
 const SALESFORCE_OBJECT_NAME = 'Student_Wallet_Pass__c';
 
 async function getAccessToken() {
+    if (cachedAccessToken && tokenExpiryTime > Date.now()) {
+        return cachedAccessToken; 
+    }
+
     try {
         console.log('Requesting Salesforce access token...');
         const response = await axios.post(SALESFORCE_TOKEN_URL, null, {
@@ -38,8 +37,10 @@ async function getAccessToken() {
             },
         });
 
-        console.log('Access token received:', response.data.access_token);
-        return response.data.access_token;
+        cachedAccessToken = response.data.access_token;
+        tokenExpiryTime = Date.now() + (response.data.expires_in * 1000); 
+        console.log('Access token received:', cachedAccessToken);
+        return cachedAccessToken;
     } catch (error) {
         console.error('Error fetching access token:', error.response?.data || error.message);
         throw new Error('Unable to retrieve Salesforce access token');
@@ -49,6 +50,11 @@ async function getAccessToken() {
 app.post(
     "/:version/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier/:serialNumber",
     async (req, res) => {
+        if (isRequestInProgress) {
+            return res.status(429).send('Request already in progress'); 
+        }
+        isRequestInProgress = true;
+
         try {
             const { deviceLibraryIdentifier, passTypeIdentifier, serialNumber } = req.params;
             const { pushToken } = req.body;
@@ -59,29 +65,20 @@ app.post(
             const [studentId, parentId] = serialNumber.split('-');
             console.log("Split Serial Number into Student ID and Parent ID:", { studentId, parentId });
             
-            const query = `SELECT+Id+FROM+${SALESFORCE_OBJECT_NAME}+WHERE+student__c='${studentId}'+AND+parent__c='${parentId}'+LIMIT+1`;
+            const query = `SELECT+Id+FROM+${SALESFORCE_OBJECT_NAME}+WHERE+student__c='${studentId}'+AND+parent__c='${parentId}'+LIMIT+1`;;
             console.log('Constructed SOQL Query:', query);
             
-            const queryUrl = `${SALESFORCE_API_URL}query?q=${query}`;
+            const queryUrl = `${SALESFORCE_API_URL}query?q=${encodeURIComponent(query)}`;
             console.log('Query URL:', queryUrl);
             
-            try {
-    const queryResponse = await axios.get(queryUrl, {
-        headers: {
-            'Authorization': `Bearer ${SALESFORCE_ACCESS_TOKEN}`,
-            'Content-Type': 'application/json'
-        }
-    });
-} catch (error) {
-    console.error('Error during Axios request:', {
-        message: error.message,
-        stack: error.stack,
-        response: error.response ? error.response.data : null,
-    });
-}
+            const queryResponse = await axios.get(queryUrl, {
+                headers: {
+                    'Authorization': `Bearer ${SALESFORCE_ACCESS_TOKEN}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
             console.log('Query Response:', queryResponse.data);
-
             const records = queryResponse.data.records;
             if (!records || records.length === 0) {
                 console.log('No records found for the given student and parent combination.');
@@ -91,15 +88,13 @@ app.post(
             const salesforceRecordId = records[0].Id;
             console.log('Salesforce Record ID:', salesforceRecordId);
 
-            // Step 3: Update the Salesforce record with pushToken
             const salesforceUpdateUrl = `${SALESFORCE_API_URL}sobjects/${SALESFORCE_OBJECT_NAME}/${salesforceRecordId}`;
             const updateData = {
                 Push_Token__c: pushToken,
-                Device_Library_Identifier__c: deviceLibraryIdentifier // Adjust the field name as necessary
+                Device_Library_Identifier__c: deviceLibraryIdentifier
             };
 
             console.log('Updating Salesforce Record with data:', updateData);
-            // Send update request to Salesforce
             await axios.patch(salesforceUpdateUrl, updateData, {
                 headers: {
                     'Authorization': `Bearer ${SALESFORCE_ACCESS_TOKEN}`,
@@ -113,6 +108,8 @@ app.post(
         } catch (error) {
             console.error('Error during device registration:', error);
             res.status(500).send('Error registering device');
+        } finally {
+            isRequestInProgress = false; 
         }
     }
 );
@@ -133,7 +130,6 @@ app.post('/generateGooglePass', async (req, res) => {
         const { studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber } = req.body;
         console.log('Google Pass Data:', { studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber });
 
-        // Create or update the Google pass
         const { saveUrl, passtoken } = await generateGooglePass.createOrUpdatePass(
             studentId,
             studentName,
