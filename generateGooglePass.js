@@ -19,74 +19,51 @@ const auth = new GoogleAuth({
   scopes: 'https://www.googleapis.com/auth/wallet_object.issuer',
 });
 
+// Create the pass class if it doesn't exist
 async function createPassClass(req, res, next) {
   const genericClass = {
-    "id": classId,
-    "classTemplateInfo": {
-      "cardTemplateOverride": {
-        "cardRowTemplateInfos": [
+    id: classId,
+    classTemplateInfo: {
+      cardTemplateOverride: {
+        cardRowTemplateInfos: [
           {
-            "threeItems": {
-              "startItem": {
-                "firstValue": {
-                  "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['admission_no']",
-                    },
-                  ],
+            threeItems: {
+              startItem: {
+                firstValue: {
+                  fields: [{ fieldPath: "object.textModulesData['admission_no']" }],
                 },
               },
-              "middleItem": {
-                "firstValue": {
-                  "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['year_group']",
-                    },
-                  ],
+              middleItem: {
+                firstValue: {
+                  fields: [{ fieldPath: "object.textModulesData['year_group']" }],
                 },
               },
-              "endItem": {
-                "firstValue": {
-                  "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['class']",
-                    },
-                  ],
+              endItem: {
+                firstValue: {
+                  fields: [{ fieldPath: "object.textModulesData['class']" }],
                 },
               },
             },
           },
           {
-            "twoItems": {
-              "startItem": {
-                "firstValue": {
-                  "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['parent_id']",
-                    },
-                  ],
+            twoItems: {
+              startItem: {
+                firstValue: {
+                  fields: [{ fieldPath: "object.textModulesData['parent_id']" }],
                 },
               },
-              "endItem": {
-                "firstValue": {
-                  "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['parent_name']",
-                    },
-                  ],
+              endItem: {
+                firstValue: {
+                  fields: [{ fieldPath: "object.textModulesData['parent_name']" }],
                 },
               },
             },
           },
           {
-            "oneItem": {
-              "item": {
-                "firstValue": {
-                  "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['parent_number']",
-                    },
-                  ],
+            oneItem: {
+              item: {
+                firstValue: {
+                  fields: [{ fieldPath: "object.textModulesData['parent_number']" }],
                 },
               },
             },
@@ -120,79 +97,54 @@ async function createPassClass(req, res, next) {
   }
 }
 
-async function createPassObject(studentId, studentName, admissionNo,studentClass,leavingDate, extParentId,parentId, parentName, parentNumber) {
-  const studentIdStr = String(studentId);
-  const objectSuffix = studentIdStr.replace(/[^\w.-]/g, '_');
+// Create or update a Google Wallet pass
+async function createPassObject(studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber) {
+  const objectSuffix = String(studentId).replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
   const currentDate = new Date().toISOString();
   const passtoken = `${currentDate}-${studentId}`;
   const serialNumber = `${studentId}-${parentId}`;
-  console.log('Object ID:'+objectId);
+
   const genericObject = {
-    "id": objectId,
-    "classId": classId,
-    "logo": {
-      "sourceUri": {
-        "uri": "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg",
+    id: objectId,
+    classId: classId,
+    logo: {
+      sourceUri: {
+        uri: "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg",
       },
-      "contentDescription": {
-        "defaultValue": {
-          "language": "en-US",
-          "value": "LOGO_IMAGE_DESCRIPTION",
+      contentDescription: {
+        defaultValue: {
+          language: "en-US",
+          value: "LOGO_IMAGE_DESCRIPTION",
         },
       },
     },
-    "cardTitle": {
-      "defaultValue": {
-        "language": "en-US",
-        "value": "SRS STUDENT PASS",
+    cardTitle: {
+      defaultValue: {
+        language: "en-US",
+        value: "SRS STUDENT PASS",
       },
     },
-    "header": {
-      "defaultValue": {
-        "language": "en-US",
-        "value": studentName,
+    header: {
+      defaultValue: {
+        language: "en-US",
+        value: studentName,
       },
     },
-    "textModulesData": [
-      {
-        "id": "admission_no",
-        "header": "ADMISSION NO",
-        "body": admissionNo,
-      },
-      {
-        "id": "year_group",
-        "header": "LEAVING DATE",
-        "body": leavingDate,
-      },
-      {
-        "id": "class",
-        "header": "CLASS",
-        "body": studentClass,
-      },
-      {
-        "id": "parent_id",
-        "header": "PARENT ID",
-        "body": extParentId,
-      },
-      {
-        "id": "parent_name",
-        "header": "PARENT NAME",
-        "body": parentName,
-      },
-      {
-        "id": "parent_number",
-        "header": "MOBILE NUMBER",
-        "body": parentNumber,
-      },
+    textModulesData: [
+      { id: "admission_no", header: "ADMISSION NO", body: admissionNo },
+      { id: "year_group", header: "LEAVING DATE", body: leavingDate },
+      { id: "class", header: "CLASS", body: studentClass },
+      { id: "parent_id", header: "PARENT ID", body: extParentId },
+      { id: "parent_name", header: "PARENT NAME", body: parentName },
+      { id: "parent_number", header: "MOBILE NUMBER", body: parentNumber },
     ],
-    "barcode": {
-      "type": "QR_CODE",
-      "value": JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, leavingDate,extParentId, parentName, parentNumber}),
-      "alternateText": "",
+    barcode: {
+      type: "QR_CODE",
+      value: JSON.stringify({ admissionNo, studentId, parentId, passtoken, studentName, studentClass, leavingDate, extParentId, parentName, parentNumber }),
     },
-    "hexBackgroundColor": "#ff914d",
-    "serialNumber": serialNumber 
+    hexBackgroundColor: "#ff914d",
+    serialNumber: serialNumber
   };
 
   const claims = {
@@ -207,8 +159,8 @@ async function createPassObject(studentId, studentName, admissionNo,studentClass
   try {
     const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
     const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
-    console.log('Pass Token' passtoken);
-    return { saveUrl, studentId,passtoken , parentId};
+    console.log('Pass Token:', passtoken);
+    return { saveUrl, studentId, passtoken, parentId };
   } catch (err) {
     console.error('Error creating JWT token:', err.message);
     throw err;
