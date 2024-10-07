@@ -55,7 +55,7 @@ app.post(
           console.log('Device registered for pass updates:', { deviceLibraryIdentifier, passTypeIdentifier, serialNumber, pushToken });
           const SALESFORCE_ACCESS_TOKEN = await getAccessToken();
           const [studentId, parentId] = serialNumber.split('-');
-
+          console.log("Access Token", +SALESFORCE_ACCESS_TOKEN);
           const query = `SELECT Id FROM ${SALESFORCE_OBJECT_NAME} WHERE student__c = '${studentId}' AND parent__c = '${parentId}' LIMIT 1`;
           const queryUrl = `${SALESFORCE_API_URL}query?q=${encodeURIComponent(query)}`;
           
