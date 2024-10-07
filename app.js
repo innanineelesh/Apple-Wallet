@@ -65,12 +65,20 @@ app.post(
             const queryUrl = `${SALESFORCE_API_URL}query?q=${query}`;
             console.log('Query URL:', queryUrl);
             
-            const queryResponse = await axios.get(queryUrl, {
-                headers: {
-                    'Authorization': `Bearer ${SALESFORCE_ACCESS_TOKEN}`,  // Corrected line
-                    'Content-Type': 'application/json'  // Added quotes around 'application/json'
-                }
-            });
+            try {
+    const queryResponse = await axios.get(queryUrl, {
+        headers: {
+            'Authorization': `Bearer ${SALESFORCE_ACCESS_TOKEN}`,
+            'Content-Type': 'application/json'
+        }
+    });
+} catch (error) {
+    console.error('Error during Axios request:', {
+        message: error.message,
+        stack: error.stack,
+        response: error.response ? error.response.data : null,
+    });
+}
 
             console.log('Query Response:', queryResponse.data);
 
