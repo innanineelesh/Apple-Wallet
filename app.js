@@ -62,7 +62,7 @@ app.post(
             const query = `SELECT+Id+FROM+${SALESFORCE_OBJECT_NAME}+WHERE+student__c='${studentId}'+AND+parent__c='${parentId}'+LIMIT+1`;
             console.log('Constructed SOQL Query:', query);
             
-            const queryUrl = `${SALESFORCE_API_URL}query?q=${encodeURIComponent(query)}`;
+            const queryUrl = `${SALESFORCE_API_URL}query?q=${query}`;
             console.log('Query URL:', queryUrl);
             
             const queryResponse = await axios.get(queryUrl, {
