@@ -93,7 +93,7 @@ app.post('/generateGooglePass', async (req, res) => {
     }
 });
 
-app.patch('/updateGooglePass', (req, res) => {
+app.post('/updateGooglePass', (req, res) => {
     updateGooglePass(req, res);
 });
 
