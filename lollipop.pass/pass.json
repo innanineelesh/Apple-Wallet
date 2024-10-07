@@ -21,41 +21,41 @@
     "primaryFields": [
       {
         "key": "studentName",
-        "value": ""
+        "value": "Not Available"
       }
     ],
     "secondaryFields": [
       {
         "key": "admissionNo",
         "label": "ADMISSION NUMBER",
-        "value": ""
+        "value": "Not Available"
       },
       {
         "key": "class",
         "label": "CLASS",
-        "value": ""
+        "value": "Not Available"
       },
       {
         "key": "leavingDate",
         "label": "LEAVING DATE",
-        "value": ""
+        "value": "Not Available"
       }
     ],
     "auxiliaryFields": [
       {
         "key": "extParentId",
         "label": "PARENT ID",
-        "value": ""
+        "value": "Not Available"
       },
       {
         "key": "parentName",
         "label": "PARENT NAME",
-        "value": ""
+        "value": "Not Available"
       },
       {
         "key": "parentNo",
         "label": "MOBILE NUMBER",
-        "value": ""
+        "value": "Not Available"
       }
     ]
   }
