@@ -70,25 +70,27 @@ app.post('/generateApplePass', (req, res) => {
 
 app.post('/generateGooglePass', async (req, res) => {
     try {
-        
-        const { studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber } = req.body;
-
-        const { saveUrl, passtoken } = await generateGooglePass.createOrUpdatePass(
-            studentId,
-            studentName,
-            admissionNo,
-            studentClass,
-            leavingDate,
-            extParentId,
-            parentId,
-            parentName,
-            parentNumber
+        await generateGooglePass.createPassClass();
+        const { saveUrl, studentId, passtoken , parentId} = await generateGooglePass.createPassObject(
+            req.body.studentId,
+            req.body.studentName,
+            req.body.admissionNo, 
+            req.body.studentClass,
+            req.body.leavingDate,
+            req.body.extParentId,
+            req.body.parentId,
+            req.body.parentName,
+            req.body.parentNumber
         );
-
-        res.json({ saveUrl, token: passtoken });
+        res.set({
+            'studentId': studentId,
+            'token': passtoken,
+            'parentId': parentId
+        });
+        res.json({ saveUrl });
     } catch (err) {
-        console.error('Error creating/updating Google pass:', err);
-        res.status(500).send('Error creating/updating Google pass');
+        console.error('Error creating pass:', err);
+        res.status(500).send('Error creating pass');
     }
 });
 
