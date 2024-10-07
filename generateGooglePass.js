@@ -207,6 +207,7 @@ async function createPassObject(studentId, studentName, admissionNo,studentClass
   try {
     const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
     const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
+    console.log('Pass Token' passtoken);
     return { saveUrl, studentId,passtoken , parentId};
   } catch (err) {
     console.error('Error creating JWT token:', err.message);
