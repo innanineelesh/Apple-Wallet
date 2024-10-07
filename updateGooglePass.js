@@ -19,10 +19,13 @@ const auth = new GoogleAuth({
 
 async function updateGooglePass(req, res) {
   const { studentId, newToken } = req.body; // Get studentId and new token from the request body
+  console.log('Received request to update Google Pass for Student ID:', studentId);
+  
   const studentIdStr = String(studentId);
   const objectSuffix = studentIdStr.replace(/[^\w.-]/g, '_'); // Ensure the object ID is URL-safe
   const objectId = `${issuerId}.${objectSuffix}`; // Generate the object ID based on issuer ID and student ID
-  
+  console.log('Generated Object ID:', objectId);
+
   const patchPayload = {
     textModulesData: [
       {
@@ -33,6 +36,8 @@ async function updateGooglePass(req, res) {
     ],
   };
 
+  console.log('Patch Payload:', patchPayload);
+
   try {
     // Make a PATCH request to update the Google Wallet object
     const response = await auth.request({
@@ -42,7 +47,7 @@ async function updateGooglePass(req, res) {
     });
 
     // Log the successful response
-    console.log('Google Pass Updated:', response.data);
+    console.log('Google Pass Updated Successfully:', response.data);
 
     // Send a success response to the client
     res.status(200).json({
@@ -58,6 +63,7 @@ async function updateGooglePass(req, res) {
       console.error('Error response data:', error.response.data);
       res.status(error.response.status).send(error.response.data); // Send the specific error message from Google API
     } else {
+      console.error('General error details:', error);
       res.status(500).send('Failed to update Google Pass');
     }
   }
