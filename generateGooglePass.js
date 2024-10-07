@@ -156,5 +156,6 @@ async function createOrUpdatePass(studentId, studentName, admissionNo, studentCl
 }
 
 module.exports = {
-    createOrUpdatePass
+    createOrUpdatePass,
+    createPassClass
 };
