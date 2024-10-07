@@ -70,7 +70,6 @@ app.post('/generateApplePass', (req, res) => {
 
 app.post('/generateGooglePass', async (req, res) => {
     try {
-        await generateGooglePass.createPassClass();
         
         const { studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber } = req.body;
 
