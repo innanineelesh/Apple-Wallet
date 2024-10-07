@@ -15,14 +15,14 @@ const wwdrFile = path.join(certsDir, 'WWDR.pem');
 
 module.exports = async (req, res) => {
     const { studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber } = req.body;
-
+    const serialNumber = `${studentId}-${parentId}`;
     const currentDate = new Date().toISOString();
     const token = `${currentDate}-${studentId}`;
     const passtoken = `${currentDate}-${studentId}`;
     const passJsonPath = path.join(passDir, 'pass.json');
     const passJson = jsonfile.readFileSync(passJsonPath);
     passJson.lastUpdate = new Date().toISOString();
-    passJson.serialNumber = studentId; 
+    passJson.serialNumber = serialNumber; 
     passJson.barcode.message = JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, leavingDate,extParentId, parentName, parentNumber});
     passJson.generic.primaryFields[0].value = studentName;
     passJson.generic.secondaryFields[0].value = admissionNo;
