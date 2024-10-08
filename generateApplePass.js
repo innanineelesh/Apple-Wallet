@@ -13,6 +13,9 @@ const certFile = path.join(certsDir, 'signingCert.pem');
 const keyFile = path.join(certsDir, 'signingKey.pem');
 const wwdrFile = path.join(certsDir, 'WWDR.pem');
 
+// Helper function to replace null with "Not Available"
+const replaceNullWithNA = (value) => value === null || value === undefined ? 'Not Available' : value;
+
 module.exports = async (req, res) => {
     const { studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber } = req.body;
     const serialNumber = `${studentId}-${parentId}`;
@@ -21,16 +24,29 @@ module.exports = async (req, res) => {
     const passtoken = `${currentDate}-${studentId}`;
     const passJsonPath = path.join(passDir, 'pass.json');
     const passJson = jsonfile.readFileSync(passJsonPath);
+    
     passJson.lastUpdate = new Date().toISOString();
     passJson.serialNumber = serialNumber; 
-    passJson.barcode.message = JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, leavingDate,extParentId, parentName, parentNumber});
-    passJson.generic.primaryFields[0].value = studentName;
-    passJson.generic.secondaryFields[0].value = admissionNo;
-    passJson.generic.secondaryFields[1].value = studentClass;
-    passJson.generic.secondaryFields[2].value = leavingDate;
-    passJson.generic.auxiliaryFields[0].value = extParentId;
-    passJson.generic.auxiliaryFields[1].value = parentName;
-    passJson.generic.auxiliaryFields[2].value = parentNumber;
+    passJson.barcode.message = JSON.stringify({ 
+        admissionNo: replaceNullWithNA(admissionNo),
+        studentId: replaceNullWithNA(studentId),
+        parentId: replaceNullWithNA(parentId),
+        passtoken: replaceNullWithNA(passtoken),
+        studentName: replaceNullWithNA(studentName),
+        studentClass: replaceNullWithNA(studentClass),
+        leavingDate: replaceNullWithNA(leavingDate),
+        extParentId: replaceNullWithNA(extParentId),
+        parentName: replaceNullWithNA(parentName),
+        parentNumber: replaceNullWithNA(parentNumber)
+    });
+    
+    passJson.generic.primaryFields[0].value = replaceNullWithNA(studentName);
+    passJson.generic.secondaryFields[0].value = replaceNullWithNA(admissionNo);
+    passJson.generic.secondaryFields[1].value = replaceNullWithNA(studentClass);
+    passJson.generic.secondaryFields[2].value = replaceNullWithNA(leavingDate);
+    passJson.generic.auxiliaryFields[0].value = replaceNullWithNA(extParentId);
+    passJson.generic.auxiliaryFields[1].value = replaceNullWithNA(parentName);
+    passJson.generic.auxiliaryFields[2].value = replaceNullWithNA(parentNumber);
 
     jsonfile.writeFileSync(passJsonPath, passJson, { spaces: 2 });
 
