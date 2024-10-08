@@ -19,6 +19,9 @@ const auth = new GoogleAuth({
   scopes: 'https://www.googleapis.com/auth/wallet_object.issuer',
 });
 
+// Helper function to replace null with "Not Available"
+const replaceNullWithNA = (value) => value === null || value === undefined ? 'Not Available' : value;
+
 // Create the pass class if it doesn't exist
 async function createPassClass(req, res, next) {
   const genericClass = {
@@ -128,20 +131,31 @@ async function createPassObject(studentId, studentName, admissionNo, studentClas
     header: {
       defaultValue: {
         language: "en-US",
-        value: studentName,
+        value: replaceNullWithNA(studentName),
       },
     },
     textModulesData: [
-      { id: "admission_no", header: "ADMISSION NO", body: admissionNo },
-      { id: "year_group", header: "LEAVING DATE", body: leavingDate },
-      { id: "class", header: "CLASS", body: studentClass },
-      { id: "parent_id", header: "PARENT ID", body: extParentId },
-      { id: "parent_name", header: "PARENT NAME", body: parentName },
-      { id: "parent_number", header: "MOBILE NUMBER", body: parentNumber },
+      { id: "admission_no", header: "ADMISSION NO", body: replaceNullWithNA(admissionNo) },
+      { id: "year_group", header: "LEAVING DATE", body: replaceNullWithNA(leavingDate) },
+      { id: "class", header: "CLASS", body: replaceNullWithNA(studentClass) },
+      { id: "parent_id", header: "PARENT ID", body: replaceNullWithNA(extParentId) },
+      { id: "parent_name", header: "PARENT NAME", body: replaceNullWithNA(parentName) },
+      { id: "parent_number", header: "MOBILE NUMBER", body: replaceNullWithNA(parentNumber) },
     ],
     barcode: {
       type: "QR_CODE",
-      value: JSON.stringify({ admissionNo, studentId, parentId, passtoken, studentName, studentClass, leavingDate, extParentId, parentName, parentNumber }),
+      value: JSON.stringify({ 
+        admissionNo: replaceNullWithNA(admissionNo),
+        studentId: replaceNullWithNA(studentId), 
+        parentId: replaceNullWithNA(parentId), 
+        passtoken: replaceNullWithNA(passtoken), 
+        studentName: replaceNullWithNA(studentName), 
+        studentClass: replaceNullWithNA(studentClass), 
+        leavingDate: replaceNullWithNA(leavingDate), 
+        extParentId: replaceNullWithNA(extParentId), 
+        parentName: replaceNullWithNA(parentName), 
+        parentNumber: replaceNullWithNA(parentNumber) 
+      }),
     },
     hexBackgroundColor: "#ff914d",
     serialNumber: serialNumber
