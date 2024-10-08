@@ -101,7 +101,7 @@ async function createPassClass(req, res, next) {
 
 // Create or update a Google Wallet pass
 async function createPassObject(studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber) {
-  const objectSuffix = String(studentId).replace(/[^\w.-]/g, '_');
+  const objectSuffix = `${studentId}_${parentId}`.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
   const currentDate = new Date().toISOString();
   const passtoken = `${currentDate}-${studentId}`;
