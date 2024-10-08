@@ -171,6 +171,34 @@ async function createPassObject(studentId, studentName, admissionNo, studentClas
   };
 
   try {
+    // Check if the object already exists
+    await auth.request({
+      url: `${baseUrl}/genericObject/${objectId}`,
+      method: 'GET'
+    });
+
+    // If it exists, update it
+    await auth.request({
+      url: `${baseUrl}/genericObject`,
+      method: 'PUT',
+      data: genericObject
+    });
+
+  } catch (err) {
+    if (err.response && err.response.status === 404) {
+      // If it doesn't exist, create a new object
+      await auth.request({
+        url: `${baseUrl}/genericObject`,
+        method: 'POST',
+        data: genericObject
+      });
+    } else {
+      console.error('Error fetching/updating object:', err.message);
+      throw err;
+    }
+  }
+
+  try {
     const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
     const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
     console.log('Pass Token:', passtoken);
