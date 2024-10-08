@@ -1,13 +1,12 @@
 const { GoogleAuth } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
-const axios = require('axios');
 require('dotenv').config();
 
 const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64_1;
 const serviceAccountRaw = Buffer.from(serviceAccountBase64, 'base64').toString('utf8');
 const credentials = JSON.parse(serviceAccountRaw);
 
-const issuerId = '3388000000022354783';
+const issuerId = '3388000000022354783'; // Replace with your actual issuer ID
 const classId = `${issuerId}.StudentPass`;
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
 
@@ -20,10 +19,10 @@ const auth = new GoogleAuth({
 });
 
 // Helper function to replace null with "Not Available"
-const replaceNullWithNA = (value) => value === null || value === undefined ? 'Not Available' : value;
+const replaceNullWithNA = (value) => (value === null || value === undefined ? 'Not Available' : value);
 
 // Create the pass class if it doesn't exist
-async function createPassClass(req, res, next) {
+async function createPassClass() {
   const genericClass = {
     id: classId,
     classTemplateInfo: {
@@ -91,11 +90,11 @@ async function createPassClass(req, res, next) {
         });
       } catch (err) {
         console.error('Error creating class:', err.message);
-        next(err);
+        throw err;
       }
     } else {
       console.error('Error fetching class:', err.message);
-      next(err);
+      throw err;
     }
   }
 }
