@@ -1,5 +1,3 @@
-08-oct
-
 const { GoogleAuth } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
