@@ -1,6 +1,5 @@
 const { GoogleAuth } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
-const axios = require('axios');
 require('dotenv').config();
 
 const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64_1;
@@ -20,7 +19,7 @@ const auth = new GoogleAuth({
 });
 
 // Helper function to replace null with "Not Available"
-const replaceNullWithNA = (value) => value === null || value === undefined ? 'Not Available' : value;
+const replaceNullWithNA = (value) => (value === null || value === undefined ? 'Not Available' : value);
 
 // Create the pass class if it doesn't exist
 async function createPassClass(req, res, next) {
@@ -190,6 +189,15 @@ async function createPassObject(studentId, studentName, admissionNo, studentClas
       await auth.request({
         url: `${baseUrl}/genericObject`,
         method: 'POST',
+        data: genericObject
+      });
+    } else if (err.response && err.response.status === 409) {
+      console.error('Error: Object already exists. Updating the existing object.');
+      // Optionally handle this scenario if needed
+      // You might want to still update the object here
+      await auth.request({
+        url: `${baseUrl}/genericObject`,
+        method: 'PUT',
         data: genericObject
       });
     } else {
