@@ -70,11 +70,14 @@ app.post('/generateApplePass', (req, res) => {
 
 app.post('/generateGooglePass', async (req, res) => {
     try {
+        // Ensure the Google Wallet pass class is created
         await generateGooglePass.createPassClass();
-        const { saveUrl, studentId, passtoken , parentId} = await generateGooglePass.createPassObject(
+
+        // Generate or update the Google Wallet pass
+        const result = await generateGooglePass.createOrUpdatePassObject(
             req.body.studentId,
             req.body.studentName,
-            req.body.admissionNo, 
+            req.body.admissionNo,
             req.body.studentClass,
             req.body.leavingDate,
             req.body.extParentId,
@@ -82,12 +85,19 @@ app.post('/generateGooglePass', async (req, res) => {
             req.body.parentName,
             req.body.parentNumber
         );
-        res.set({
-            'studentId': studentId,
-            'token': passtoken,
-            'parentId': parentId
-        });
-        res.json({ saveUrl });
+
+        // Prepare response based on the operation
+        if (result.success) {
+            const { saveUrl, studentId, passtoken, parentId } = result;
+            res.set({
+                'studentId': studentId,
+                'token': passtoken,
+                'parentId': parentId
+            });
+            res.json({ saveUrl, message: result.message });
+        } else {
+            res.status(500).json({ message: result.message });
+        }
     } catch (err) {
         console.error('Error creating pass:', err);
         res.status(500).send('Error creating pass');
