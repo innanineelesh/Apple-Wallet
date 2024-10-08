@@ -1,12 +1,15 @@
+08-oct
+
 const { GoogleAuth } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
 require('dotenv').config();
 
 const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64_1;
 const serviceAccountRaw = Buffer.from(serviceAccountBase64, 'base64').toString('utf8');
 const credentials = JSON.parse(serviceAccountRaw);
 
-const issuerId = '3388000000022354783'; // Replace with your actual issuer ID
+const issuerId = '3388000000022354783';
 const classId = `${issuerId}.StudentPass`;
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1';
 
@@ -19,10 +22,10 @@ const auth = new GoogleAuth({
 });
 
 // Helper function to replace null with "Not Available"
-const replaceNullWithNA = (value) => (value === null || value === undefined ? 'Not Available' : value);
+const replaceNullWithNA = (value) => value === null || value === undefined ? 'Not Available' : value;
 
 // Create the pass class if it doesn't exist
-async function createPassClass() {
+async function createPassClass(req, res, next) {
   const genericClass = {
     id: classId,
     classTemplateInfo: {
@@ -90,19 +93,22 @@ async function createPassClass() {
         });
       } catch (err) {
         console.error('Error creating class:', err.message);
-        throw err;
+        next(err);
       }
     } else {
       console.error('Error fetching class:', err.message);
-      throw err;
+      next(err);
     }
   }
 }
 
 // Create or update a Google Wallet pass
-async function createOrUpdatePassObject(studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber) {
+async function createPassObject(studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber) {
   const objectSuffix = `${studentId}_${parentId}`.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
+  const currentDate = new Date().toISOString();
+  const passtoken = `${currentDate}-${studentId}`;
+  const serialNumber = `${studentId}-${parentId}`;
 
   const genericObject = {
     id: objectId,
@@ -144,6 +150,7 @@ async function createOrUpdatePassObject(studentId, studentName, admissionNo, stu
         admissionNo: replaceNullWithNA(admissionNo),
         studentId: replaceNullWithNA(studentId), 
         parentId: replaceNullWithNA(parentId), 
+        passtoken: replaceNullWithNA(passtoken), 
         studentName: replaceNullWithNA(studentName), 
         studentClass: replaceNullWithNA(studentClass), 
         leavingDate: replaceNullWithNA(leavingDate), 
@@ -153,46 +160,30 @@ async function createOrUpdatePassObject(studentId, studentName, admissionNo, stu
       }),
     },
     hexBackgroundColor: "#ff914d",
-    serialNumber: `${studentId}-${parentId}`
+    serialNumber: serialNumber
+  };
+
+  const claims = {
+    iss: credentials.client_email,
+    aud: 'google',
+    typ: 'savetowallet',
+    payload: {
+      genericObjects: [genericObject]
+    }
   };
 
   try {
-    // Check if the pass object already exists
-    await auth.request({
-      url: `${baseUrl}/genericObject/${objectId}`,
-      method: 'GET',
-    });
-
-    // If it exists, update it
-    await auth.request({
-      url: `${baseUrl}/genericObject/${objectId}`,
-      method: 'PATCH',
-      data: genericObject,
-    });
-    
-    console.log(`Pass object updated: ${objectId}`);
-    return { success: true, message: `Pass updated successfully: ${objectId}` };
-    
+    const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
+    const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
+    console.log('Pass Token:', passtoken);
+    return { saveUrl, studentId, passtoken, parentId };
   } catch (err) {
-    if (err.response && err.response.status === 404) {
-      // If it doesn't exist, create it
-      await auth.request({
-        url: `${baseUrl}/genericObject`,
-        method: 'POST',
-        data: genericObject,
-      });
-      
-      console.log(`Pass object created: ${objectId}`);
-      return { success: true, message: `Pass created successfully: ${objectId}` };
-      
-    } else {
-      console.error('Error fetching or updating pass object:', err.message);
-      return { success: false, message: `Error: ${err.message}` };
-    }
+    console.error('Error creating JWT token:', err.message);
+    throw err;
   }
 }
 
 module.exports = {
   createPassClass,
-  createOrUpdatePassObject
+  createPassObject
 };
