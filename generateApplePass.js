@@ -14,7 +14,7 @@ const keyFile = path.join(certsDir, 'signingKey.pem');
 const wwdrFile = path.join(certsDir, 'WWDR.pem');
 
 // Helper function to replace null with "Not Available"
-const replaceNullWithNA = (value) => value === null || value === undefined ? 'Not Available' : value;
+const replaceNullWithNA = (value) => value === null || value === undefined ? 'N/A' : value;
 
 module.exports = async (req, res) => {
     const { studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber } = req.body;
