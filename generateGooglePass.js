@@ -20,7 +20,7 @@ const auth = new GoogleAuth({
 });
 
 // Helper function to replace null with "Not Available"
-const replaceNullWithNA = (value) => value === null || value === undefined ? 'Not Available' : value;
+const replaceNullWithNA = (value) => value === null || value === undefined ? 'N/A' : value;
 
 // Create the pass class if it doesn't exist
 async function createPassClass(req, res, next) {
