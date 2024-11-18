@@ -15,7 +15,7 @@
   "description": "SRS STUDENT PASS",
   "logoText": "SRS STUDENT PASS",
   "foregroundColor": "rgb(255, 255, 255)",
-  "backgroundColor": "rgb(255,145,77)",
+  "backgroundColor": "rgb(254,107,1)",
   "labelColor":"rgb(255, 255, 255)",
   "generic": {
     "primaryFields": [
