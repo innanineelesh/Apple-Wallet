@@ -34,11 +34,6 @@
         "key": "class",
         "label": "CLASS",
         "value": "Not Available"
-      },
-      {
-        "key": "leavingDate",
-        "label": "LEAVING DATE",
-        "value": "Not Available"
       }
     ],
     "auxiliaryFields": [
