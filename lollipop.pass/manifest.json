@@ -4,7 +4,8 @@
   "icon@2x.png": "3d30671a9ac6e5d4ae7f4a1c14040e7a5cb73539",
   "logo.png": "ce4250fa2b408d8c059d7201d110b559c0860cef",
   "logo.svg": "ea585c948d95a971d6e12ef9a9ee45ee998f29e3",
-  "logo@2x.png": "65446324ba7315c4ceb650e8a591d1125997aecb",
+  "logo@2x.png": "",
   "logo@2xold.png": "b9563fe9bb3823bbb798e39520e6da62708abad9",
-  "pass.json": "3be95bc8045e106aad7a1591230d2d38f64c4890"
+  "pass.json": "3be95bc8045e106aad7a1591230d2d38f64c4890",
+  "strip.png":""
 }
