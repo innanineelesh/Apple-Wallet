@@ -101,7 +101,7 @@ async function createPassClass(req, res, next) {
 }
 
 // Create or update a Google Wallet pass
-async function createPassObject(studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber) {
+async function createPassObject(studentId, studentName, admissionNo, studentClass, extParentId, parentId, parentName, parentNumber) {
   const objectSuffix = `${studentId}_${parentId}`.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
   const currentDate = new Date().toISOString();
@@ -136,7 +136,6 @@ async function createPassObject(studentId, studentName, admissionNo, studentClas
     },
     textModulesData: [
       { id: "admission_no", header: "ADMISSION NO", body: replaceNullWithNA(admissionNo) },
-      { id: "year_group", header: "LEAVING DATE", body: replaceNullWithNA(leavingDate) },
       { id: "class", header: "CLASS", body: replaceNullWithNA(studentClass) },
       { id: "parent_id", header: "PARENT ID", body: replaceNullWithNA(extParentId) },
       { id: "parent_name", header: "PARENT NAME", body: replaceNullWithNA(parentName) },
@@ -151,7 +150,7 @@ async function createPassObject(studentId, studentName, admissionNo, studentClas
         passtoken: replaceNullWithNA(passtoken), 
         studentName: replaceNullWithNA(studentName), 
         studentClass: replaceNullWithNA(studentClass), 
-        leavingDate: replaceNullWithNA(leavingDate), 
+        
         extParentId: replaceNullWithNA(extParentId), 
         parentName: replaceNullWithNA(parentName), 
         parentNumber: replaceNullWithNA(parentNumber) 
