@@ -170,11 +170,16 @@ async function createPassObject(studentId, studentName, admissionNo, studentClas
     }
   };
 
+
+
+res.send(`<a href='${saveUrl}'><img src='wallet-button.png'></a>`);
+
   try {
     const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
     const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
     console.log('Pass Token:', passtoken);
     return { saveUrl, studentId, passtoken, parentId };
+    res.send(`<a href='${saveUrl}'><img src='wallet-button.png'></a>`);
   } catch (err) {
     console.error('Error creating JWT token:', err.message);
     throw err;
