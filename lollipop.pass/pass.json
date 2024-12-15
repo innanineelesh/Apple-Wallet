@@ -13,9 +13,9 @@
   },
   "organizationName": "SCHOOL OF RESEARCH SCIENCE",
   "description": "SRS STUDENT PASS",
-  "logoText": "",
+  "logoText": "SRS STUDENT PASS",
   "foregroundColor": "rgb(255, 255, 255)",
-  "backgroundColor": "rgb(254,107,1)",
+  "backgroundColor": "rgb(255,145,77)",
   "labelColor":"rgb(255, 255, 255)",
   "generic": {
     "primaryFields": [
@@ -33,6 +33,11 @@
       {
         "key": "class",
         "label": "CLASS",
+        "value": "Not Available"
+      },
+      {
+        "key": "leavingDate",
+        "label": "LEAVING DATE",
         "value": "Not Available"
       }
     ],
