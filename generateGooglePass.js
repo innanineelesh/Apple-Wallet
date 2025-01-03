@@ -19,54 +19,74 @@ const auth = new GoogleAuth({
   scopes: 'https://www.googleapis.com/auth/wallet_object.issuer',
 });
 
-// Helper function to replace null with "Not Available"
-const replaceNullWithNA = (value) => value === null || value === undefined ? 'Not Available' : value;
-
-// Create the pass class if it doesn't exist
 async function createPassClass(req, res, next) {
   const genericClass = {
-    id: classId,
-    classTemplateInfo: {
-      cardTemplateOverride: {
-        cardRowTemplateInfos: [
+    "id": classId,
+    "classTemplateInfo": {
+      "cardTemplateOverride": {
+        "cardRowTemplateInfos": [
           {
-            threeItems: {
-              startItem: {
-                firstValue: {
-                  fields: [{ fieldPath: "object.textModulesData['admission_no']" }],
+            "threeItems": {
+              "startItem": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['admission_no']",
+                    },
+                  ],
                 },
               },
-              middleItem: {
-                firstValue: {
-                  fields: [{ fieldPath: "object.textModulesData['year_group']" }],
+              "middleItem": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['year_group']",
+                    },
+                  ],
                 },
               },
-              endItem: {
-                firstValue: {
-                  fields: [{ fieldPath: "object.textModulesData['class']" }],
+              "endItem": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['class']",
+                    },
+                  ],
                 },
               },
             },
           },
           {
-            twoItems: {
-              startItem: {
-                firstValue: {
-                  fields: [{ fieldPath: "object.textModulesData['parent_id']" }],
+            "twoItems": {
+              "startItem": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['parent_id']",
+                    },
+                  ],
                 },
               },
-              endItem: {
-                firstValue: {
-                  fields: [{ fieldPath: "object.textModulesData['parent_name']" }],
+              "endItem": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['parent_name']",
+                    },
+                  ],
                 },
               },
             },
           },
           {
-            oneItem: {
-              item: {
-                firstValue: {
-                  fields: [{ fieldPath: "object.textModulesData['parent_number']" }],
+            "oneItem": {
+              "item": {
+                "firstValue": {
+                  "fields": [
+                    {
+                      "fieldPath": "object.textModulesData['parent_number']",
+                    },
+                  ],
                 },
               },
             },
@@ -100,100 +120,99 @@ async function createPassClass(req, res, next) {
   }
 }
 
-// Create or update a Google Wallet pass
-async function createOrUpdatePassObject(studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber) {
-  const objectSuffix = `${studentId}_${parentId}`.replace(/[^\w.-]/g, '_');
+async function createPassObject(studentId, studentName, admissionNo,studentClass,leavingDate, extParentId,parentId, parentName, parentNumber) {
+  const studentIdStr = String(studentId);
+  const objectSuffix = studentIdStr.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
-
+  const currentDate = new Date().toISOString();
+  const passtoken = `${currentDate}-${studentId}`;
+  console.log('Object ID:'+objectId);
   const genericObject = {
-    id: objectId,
-    classId: classId,
-    logo: {
-      sourceUri: {
-        uri: "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg",
+    "id": objectId,
+    "classId": classId,
+    "logo": {
+      "sourceUri": {
+        "uri": "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg",
       },
-      contentDescription: {
-        defaultValue: {
-          language: "en-US",
-          value: "LOGO_IMAGE_DESCRIPTION",
+      "contentDescription": {
+        "defaultValue": {
+          "language": "en-US",
+          "value": "LOGO_IMAGE_DESCRIPTION",
         },
       },
     },
-    cardTitle: {
-      defaultValue: {
-        language: "en-US",
-        value: "SRS STUDENT PASS",
+    "cardTitle": {
+      "defaultValue": {
+        "language": "en-US",
+        "value": "SRS STUDENT PASS",
       },
     },
-    header: {
-      defaultValue: {
-        language: "en-US",
-        value: replaceNullWithNA(studentName),
+    "header": {
+      "defaultValue": {
+        "language": "en-US",
+        "value": studentName,
       },
     },
-    textModulesData: [
-      { id: "admission_no", header: "ADMISSION NO", body: replaceNullWithNA(admissionNo) },
-      { id: "year_group", header: "LEAVING DATE", body: replaceNullWithNA(leavingDate) },
-      { id: "class", header: "CLASS", body: replaceNullWithNA(studentClass) },
-      { id: "parent_id", header: "PARENT ID", body: replaceNullWithNA(extParentId) },
-      { id: "parent_name", header: "PARENT NAME", body: replaceNullWithNA(parentName) },
-      { id: "parent_number", header: "MOBILE NUMBER", body: replaceNullWithNA(parentNumber) },
+    "textModulesData": [
+      {
+        "id": "admission_no",
+        "header": "ADMISSION NO",
+        "body": admissionNo,
+      },
+      {
+        "id": "year_group",
+        "header": "LEAVING DATE",
+        "body": leavingDate,
+      },
+      {
+        "id": "class",
+        "header": "CLASS",
+        "body": studentClass,
+      },
+      {
+        "id": "parent_id",
+        "header": "PARENT ID",
+        "body": extParentId,
+      },
+      {
+        "id": "parent_name",
+        "header": "PARENT NAME",
+        "body": parentName,
+      },
+      {
+        "id": "parent_number",
+        "header": "MOBILE NUMBER",
+        "body": parentNumber,
+      },
     ],
-    barcode: {
-      type: "QR_CODE",
-      value: JSON.stringify({ 
-        admissionNo: replaceNullWithNA(admissionNo),
-        studentId: replaceNullWithNA(studentId), 
-        parentId: replaceNullWithNA(parentId), 
-        studentName: replaceNullWithNA(studentName), 
-        studentClass: replaceNullWithNA(studentClass), 
-        leavingDate: replaceNullWithNA(leavingDate), 
-        extParentId: replaceNullWithNA(extParentId), 
-        parentName: replaceNullWithNA(parentName), 
-        parentNumber: replaceNullWithNA(parentNumber) 
-      }),
+    "barcode": {
+      "type": "QR_CODE",
+      "value": JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, leavingDate,extParentId, parentName, parentNumber}),
+      "alternateText": "",
     },
-    hexBackgroundColor: "#ff914d",
-    serialNumber: `${studentId}-${parentId}`
+    "hexBackgroundColor": "#ff914d",
+  };
+
+  const claims = {
+    iss: credentials.client_email,
+    aud: 'google',
+    typ: 'savetowallet',
+    payload: {
+      genericObjects: [genericObject]
+    }
   };
 
   try {
-    // Check if the pass object already exists
-    await auth.request({
-      url: `${baseUrl}/genericObject/${objectId}`,
-      method: 'GET',
-    });
-
-    // If it exists, update it
-    await auth.request({
-      url: `${baseUrl}/genericObject/${objectId}`,
-      method: 'PATCH',
-      data: genericObject,
-    });
-    
-    console.log(`Pass object updated: ${objectId}`);
-    return { success: true, message: `Pass updated successfully: ${objectId}` };
-    
+    const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
+    const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
+    return { saveUrl, studentId,passtoken , parentId};
   } catch (err) {
-    if (err.response && err.response.status === 404) {
-      // If it doesn't exist, create it
-      await auth.request({
-        url: `${baseUrl}/genericObject`,
-        method: 'POST',
-        data: genericObject,
-      });
-      
-      console.log(`Pass object created: ${objectId}`);
-      return { success: true, message: `Pass created successfully: ${objectId}` };
-      
-    } else {
-      console.error('Error fetching or updating pass object:', err.message);
-      return { success: false, message: `Error: ${err.message}` };
-    }
+    console.error('Error creating JWT token:', err.message);
+    throw err;
   }
 }
 
 module.exports = {
   createPassClass,
-  createOrUpdatePassObject
+  createPassObject
 };
