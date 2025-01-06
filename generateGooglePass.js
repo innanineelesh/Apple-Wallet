@@ -132,7 +132,8 @@ async function createPassObject(studentId, studentName, admissionNo,studentClass
     "classId": classId,
     "logo": {
       "sourceUri": {
-        "uri": "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg"
+    "uri": "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg"
+  },
       "contentDescription": {
         "defaultValue": {
           "language": "en-US",
