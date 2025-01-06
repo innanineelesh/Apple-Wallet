@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
     passJson.generic.primaryFields[0].value = replaceNullWithNA(studentName);
     passJson.generic.secondaryFields[0].value = replaceNullWithNA(admissionNo);
     passJson.generic.secondaryFields[1].value = replaceNullWithNA(studentClass);
-    passJson.generic.secondaryFields[2].value = replaceNullWithNA(leavingDate);
+    
     passJson.generic.auxiliaryFields[0].value = replaceNullWithNA(extParentId);
     passJson.generic.auxiliaryFields[1].value = replaceNullWithNA(parentName);
     passJson.generic.auxiliaryFields[2].value = replaceNullWithNA(parentNumber);
