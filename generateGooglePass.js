@@ -132,7 +132,7 @@ async function createPassObject(studentId, studentName, admissionNo,studentClass
     "classId": classId,
     "logo": {
       "sourceUri": {
-        "uri": "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg",
+        "uri": "https://schoolofresearchscience.my.salesforce.com/sfc/p/4J000000Otso/a/J7000000Lo74/giko_uvwHgy43WI4KljlN52V_yn_14A6dcayvbR1TF0",
       },
       "contentDescription": {
         "defaultValue": {
