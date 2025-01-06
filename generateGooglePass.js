@@ -160,11 +160,6 @@ async function createPassObject(studentId, studentName, admissionNo,studentClass
         "body": admissionNo,
       },
       {
-        "id": "year_group",
-        "header": "LEAVING DATE",
-        "body": leavingDate,
-      },
-      {
         "id": "class",
         "header": "CLASS",
         "body": studentClass,
@@ -187,7 +182,7 @@ async function createPassObject(studentId, studentName, admissionNo,studentClass
     ],
     "barcode": {
       "type": "QR_CODE",
-      "value": JSON.stringify({ admissionNo, studentId, parentId, passtoken , studentName, admissionNo, studentClass, leavingDate,extParentId, parentName, parentNumber}),
+      "value": JSON.stringify({ studentId, parentId, passtoken }),
       "alternateText": "",
     },
     "hexBackgroundColor": "#ff914d",
