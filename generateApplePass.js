@@ -28,7 +28,6 @@ module.exports = async (req, res) => {
     passJson.lastUpdate = new Date().toISOString();
     passJson.serialNumber = serialNumber; 
     passJson.barcode.message = JSON.stringify({ 
-        admissionNo: replaceNullWithNA(admissionNo),
         studentId: replaceNullWithNA(studentId),
         parentId: replaceNullWithNA(parentId),
         passtoken: replaceNullWithNA(passtoken)
