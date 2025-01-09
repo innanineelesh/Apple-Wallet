@@ -30,7 +30,7 @@ async function createPassClass(req, res, next) {
                 firstValue: {
                   fields: [
                     {
-                      fieldPath: "object.textModulesData[0].body", // Maps to 'admission_no'
+                      fieldPath: "object.textModulesData[0]", // Maps to 'admission_no'
                     },
                   ],
                 },
@@ -39,7 +39,7 @@ async function createPassClass(req, res, next) {
                 firstValue: {
                   fields: [
                     {
-                      fieldPath: "object.textModulesData[1].body", // Maps to 'year_group'
+                      fieldPath: "object.textModulesData[1]", // Maps to 'year_group'
                     },
                   ],
                 },
@@ -48,7 +48,7 @@ async function createPassClass(req, res, next) {
                 firstValue: {
                   fields: [
                     {
-                      fieldPath: "object.textModulesData[2].body", // Maps to 'class'
+                      fieldPath: "object.textModulesData[2]", // Maps to 'class'
                     },
                   ],
                 },
@@ -61,7 +61,7 @@ async function createPassClass(req, res, next) {
                 firstValue: {
                   fields: [
                     {
-                      fieldPath: "object.textModulesData[3].body", // Maps to 'parent_id'
+                      fieldPath: "object.textModulesData[3]", // Maps to 'parent_id'
                     },
                   ],
                 },
@@ -70,7 +70,7 @@ async function createPassClass(req, res, next) {
                 firstValue: {
                   fields: [
                     {
-                      fieldPath: "object.textModulesData[4].body", // Maps to 'parent_name'
+                      fieldPath: "object.textModulesData[4]", // Maps to 'parent_name'
                     },
                   ],
                 },
