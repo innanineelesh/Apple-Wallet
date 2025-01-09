@@ -5,8 +5,13 @@
   "main": "generateApplePass.js",
   "scripts": {
     "start": "node generateApplePass.js",
-    "start-google": "node generateGooglePass.js"
+    "start-google": "node generateGooglePass.js",
+    "postinstall": "npm install -g npm@11.0.0"
   },
+  "engines": {
+    "node": ">=20.17.0 || >=22.9.0",
+    "npm": ">=11.0.0"
+},
   "dependencies": {
     "archiver": "^5.3.0",
     "body-parser": "^1.20.2",
@@ -18,8 +23,6 @@
     "jsonfile": "^6.1.0",
     "jsonwebtoken": "^9.0.2",
     "node-forge": "^0.10.0",
-    "axios": "^1.4.0",
-    "node": "^20.17.0 || >=22.9.0",
-    "npm":"^11.0.0"
+    "axios": "^1.4.0"
   }
 }
