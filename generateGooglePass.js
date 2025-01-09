@@ -1,6 +1,5 @@
 const { GoogleAuth } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
-const axios = require('axios');
 require('dotenv').config();
 
 const serviceAccountBase64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64_1;
@@ -21,35 +20,35 @@ const auth = new GoogleAuth({
 
 async function createPassClass(req, res, next) {
   const genericClass = {
-    "id": classId,
-    "classTemplateInfo": {
-      "cardTemplateOverride": {
-        "cardRowTemplateInfos": [
+    id: classId,
+    classTemplateInfo: {
+      cardTemplateOverride: {
+        cardRowTemplateInfos: [
           {
-            "threeItems": {
-              "startItem": {
-                "firstValue": {
-                  "fields": [
+            threeItems: {
+              startItem: {
+                firstValue: {
+                  fields: [
                     {
-                      "fieldPath": "object.textModulesData['admission_no']",
+                      fieldPath: "object.textModulesData[0].body", // Maps to 'admission_no'
                     },
                   ],
                 },
               },
-              "middleItem": {
-                "firstValue": {
-                  "fields": [
+              middleItem: {
+                firstValue: {
+                  fields: [
                     {
-                      "fieldPath": "object.textModulesData['year_group']",
+                      fieldPath: "object.textModulesData[1].body", // Maps to 'year_group'
                     },
                   ],
                 },
               },
-              "endItem": {
-                "firstValue": {
-                  "fields": [
+              endItem: {
+                firstValue: {
+                  fields: [
                     {
-                      "fieldPath": "object.textModulesData['class']",
+                      fieldPath: "object.textModulesData[2].body", // Maps to 'class'
                     },
                   ],
                 },
@@ -57,34 +56,21 @@ async function createPassClass(req, res, next) {
             },
           },
           {
-            "twoItems": {
-              "startItem": {
-                "firstValue": {
-                  "fields": [
+            twoItems: {
+              startItem: {
+                firstValue: {
+                  fields: [
                     {
-                      "fieldPath": "object.textModulesData['parent_id']",
+                      fieldPath: "object.textModulesData[3].body", // Maps to 'parent_id'
                     },
                   ],
                 },
               },
-              "endItem": {
-                "firstValue": {
-                  "fields": [
+              endItem: {
+                firstValue: {
+                  fields: [
                     {
-                      "fieldPath": "object.textModulesData['parent_name']",
-                    },
-                  ],
-                },
-              },
-            },
-          },
-          {
-            "oneItem": {
-              "item": {
-                "firstValue": {
-                  "fields": [
-                    {
-                      "fieldPath": "object.textModulesData['parent_number']",
+                      fieldPath: "object.textModulesData[4].body", // Maps to 'parent_name'
                     },
                   ],
                 },
@@ -99,7 +85,7 @@ async function createPassClass(req, res, next) {
   try {
     await auth.request({
       url: `${baseUrl}/genericClass/${classId}`,
-      method: 'GET'
+      method: 'GET',
     });
   } catch (err) {
     if (err.response && err.response.status === 404) {
@@ -107,7 +93,7 @@ async function createPassClass(req, res, next) {
         await auth.request({
           url: `${baseUrl}/genericClass`,
           method: 'POST',
-          data: genericClass
+          data: genericClass,
         });
       } catch (err) {
         console.error('Error creating class:', err.message);
@@ -120,94 +106,95 @@ async function createPassClass(req, res, next) {
   }
 }
 
-async function createPassObject(studentId, studentName, admissionNo,studentClass,leavingDate, extParentId,parentId, parentName, parentNumber) {
+async function createPassObject(studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber) {
   const studentIdStr = String(studentId);
   const objectSuffix = studentIdStr.replace(/[^\w.-]/g, '_');
   const objectId = `${issuerId}.${objectSuffix}`;
   const currentDate = new Date().toISOString();
   const passtoken = `${currentDate}-${studentId}`;
-  console.log('Object ID:'+objectId);
+  console.log('Object ID:', objectId);
+
   const genericObject = {
-    "id": objectId,
-    "classId": classId,
-    "logo": {
-      "sourceUri": {
-    "uri": "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg"
-  },
-      "contentDescription": {
-        "defaultValue": {
-          "language": "en-US",
-          "value": "LOGO_IMAGE_DESCRIPTION",
+    id: objectId,
+    classId: classId,
+    logo: {
+      sourceUri: {
+        uri: "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg",
+      },
+      contentDescription: {
+        defaultValue: {
+          language: "en-US",
+          value: "LOGO_IMAGE_DESCRIPTION",
         },
       },
     },
-    "cardTitle": {
-      "defaultValue": {
-        "language": "en-US",
-        "value": "SRS STUDENT PASS",
+    cardTitle: {
+      defaultValue: {
+        language: "en-US",
+        value: "SRS STUDENT PASS",
       },
     },
-    "header": {
-      "defaultValue": {
-        "language": "en-US",
-        "value": studentName,
+    header: {
+      defaultValue: {
+        language: "en-US",
+        value: studentName,
       },
     },
-    "textModulesData": [
+    textModulesData: [
       {
-        "id": "admission_no",
-        "header": "ADMISSION NO",
-        "body": admissionNo,
+        id: "admission_no",
+        header: "ADMISSION NO",
+        body: admissionNo,
       },
       {
-        "id": "class",
-        "header": "CLASS",
-        "body": studentClass,
+        id: "class",
+        header: "CLASS",
+        body: studentClass,
       },
       {
-        "id": "parent_id",
-        "header": "PARENT ID",
-        "body": extParentId,
+        id: "parent_id",
+        header: "PARENT ID",
+        body: extParentId,
       },
       {
-        "id": "parent_name",
-        "header": "PARENT NAME",
-        "body": parentName,
+        id: "parent_name",
+        header: "PARENT NAME",
+        body: parentName,
       },
       {
-        "id": "parent_number",
-        "header": "MOBILE NUMBER",
-        "body": parentNumber,
+        id: "parent_number",
+        header: "MOBILE NUMBER",
+        body: parentNumber,
       },
     ],
-    "barcode": {
-      "type": "QR_CODE",
-      "value": JSON.stringify({ studentId, parentId, passtoken }),
-      "alternateText": "",
+    barcode: {
+      type: "QR_CODE",
+      value: JSON.stringify({ studentId, parentId, passtoken }),
+      alternateText: "",
     },
-    "hexBackgroundColor": "#ff914d",
+    hexBackgroundColor: "#ff914d",
   };
 
   const claims = {
     iss: credentials.client_email,
-    aud: 'google',
-    typ: 'savetowallet',
+    aud: "google",
+    typ: "savetowallet",
     payload: {
-      genericObjects: [genericObject]
-    }
+      genericObjects: [genericObject],
+    },
   };
 
   try {
-    const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' });
+    const token = jwt.sign(claims, credentials.private_key, { algorithm: "RS256" });
     const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
-    return { saveUrl, studentId,passtoken , parentId};
+    return { saveUrl, studentId, passtoken, parentId };
   } catch (err) {
-    console.error('Error creating JWT token:', err.message);
+    console.error("Error creating JWT token:", err.message);
     throw err;
   }
 }
 
 module.exports = {
   createPassClass,
-  createPassObject
+  createPassObject,
 };
