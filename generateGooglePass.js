@@ -108,8 +108,10 @@ async function createPassClass(req, res, next) {
 
 async function createPassObject(studentId, studentName, admissionNo, studentClass, leavingDate, extParentId, parentId, parentName, parentNumber) {
   const studentIdStr = String(studentId);
+  const parentIdStr = String(parentId);
+  const objectPrefix = parentIdStr.replace(/[^\w.-]/g, '_');
   const objectSuffix = studentIdStr.replace(/[^\w.-]/g, '_');
-  const objectId = `${issuerId}.${objectSuffix}`;
+  const objectId = `${issuerId}.${objectSuffix}.${objectPrefix}`;
   const currentDate = new Date().toISOString();
   const passtoken = `${currentDate}-${studentId}`;
   console.log('Object ID:', objectId);
